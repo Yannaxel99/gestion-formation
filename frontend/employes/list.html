@@ -4,70 +4,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Liste des employés</title>
+    <title>Annuaire des Employés - Gestion Pro</title>
 
-    <!-- BOOTSTRAP -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-    <!-- JS -->
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/employes.js"></script>
 
-    <!-- TON CSS -->
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        :root {
+            --sidebar-bg: #111827;
+            --sidebar-hover: #1f2937;
+            --accent-color: #3b82f6;
+        }
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        /* ✅ SIDEBAR STYLE */
+        #sidebar {
+            width: 280px; min-height: 100vh; background: var(--sidebar-bg);
+            position: fixed; color: #f3f4f6; z-index: 1050;
+            border-right: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .sidebar-header { padding: 25px 20px; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        .sidebar-link {
+            display: flex; align-items: center; padding: 14px 20px;
+            color: #9ca3af !important; text-decoration: none;
+            font-size: 0.95rem; font-weight: 500; transition: 0.2s;
+        }
+        .sidebar-link:hover { color: white !important; background: var(--sidebar-hover); }
+
+        #sidebar .accordion-item { background: transparent !important; border: none; }
+        #sidebar .accordion-button {
+            background: transparent !important; color: #9ca3af !important;
+            padding: 14px 20px; box-shadow: none !important;
+        }
+        #sidebar .accordion-button:not(.collapsed) { color: white !important; background: var(--sidebar-hover) !important; }
+        #sidebar .accordion-button::after { filter: brightness(0) invert(1); transform: scale(0.8); }
+
+        #sidebar .accordion-body { padding: 5px 0 10px 0; background: rgba(0,0,0,0.1); }
+        #sidebar .accordion-body a {
+            color: #9ca3af; padding: 10px 20px 10px 50px; display: block;
+            text-decoration: none; font-size: 0.9rem; transition: 0.2s;
+        }
+        #sidebar .accordion-body a:hover { color: white; background: rgba(255,255,255,0.05); }
+        #sidebar .accordion-body a.active-link { font-weight: bold; color: var(--accent-color); background: rgba(59, 130, 246, 0.1); }
+
+        .nav-special { margin-top: auto; padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); }
+
+        /* ✅ CONTENT */
+        #content { margin-left: 280px; width: calc(100% - 280px); padding: 40px; min-height: 100vh; }
+
+        /* ✅ TABLE STYLE */
+        .table-card { border: none; border-radius: 12px; overflow: hidden; border-top: 5px solid var(--accent-color); }
+        .table thead { background: #f8fafc; }
+        .table th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; padding: 15px; }
+        .table td { vertical-align: middle; padding: 15px; color: #334155; }
+    </style>
 </head>
 
 <body onload="loadEmployes()" class="bg-light">
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container-fluid">
-        <a href="../index.html" class="navbar-brand">Gestion Formation</a>
+<div class="d-flex">
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <div id="sidebar" class="d-flex flex-column">
+        <div class="sidebar-header">
+            <h5 class="mb-0 fw-bold"><i class="bi bi-mortarboard-fill me-2 text-primary"></i> GESTION PRO</h5>
+        </div>
 
-        <div class="collapse navbar-collapse" id="menu">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a href="../formations/list.html" class="nav-link">Formations</a></li>
-                <li class="nav-item"><a href="list.html" class="nav-link active">Employés</a></li>
-                <li class="nav-item"><a href="../sessions/list.html" class="nav-link">Sessions</a></li>
-                <li class="nav-item"><a href="../demandes/create.html" class="nav-link">Demandes</a></li>
-                <li class="nav-item"><a href="../inscriptions/inscrire.html" class="nav-link">Inscriptions</a></li>
-            </ul>
+        <div class="accordion accordion-flush" id="menuAcc">
+            <div class="accordion-item">
+                <a href="../index.html" class="sidebar-link"><i class="bi bi-speedometer2 me-3"></i> Dashboard</a>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#fm"><i class="bi bi-book me-3"></i> Formations</button>
+                <div id="fm" class="accordion-collapse collapse" data-bs-parent="#menuAcc">
+                    <div class="accordion-body">
+                        <a href="../formations/list.html">Liste</a>
+                        <a href="../formations/add.html">Ajouter</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-button text-white" data-bs-toggle="collapse" data-bs-target="#emp"><i class="bi bi-people me-3"></i> Employés</button>
+                <div id="emp" class="accordion-collapse collapse show" data-bs-parent="#menuAcc">
+                    <div class="accordion-body">
+                        <a href="list.html" class="active-link">Annuaire</a>
+                        <a href="add.html">Ajouter un employé</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#ses"><i class="bi bi-calendar-event me-3"></i> Sessions</button>
+                <div id="ses" class="accordion-collapse collapse" data-bs-parent="#menuAcc">
+                    <div class="accordion-body">
+                        <a href="../sessions/list.html">Liste des sessions</a>
+                        <a href="../sessions/add.html">Créer une session</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#dem"><i class="bi bi-file-earmark-text me-3"></i> Demandes</button>
+                <div id="dem" class="accordion-collapse collapse" data-bs-parent="#menuAcc">
+                    <div class="accordion-body">
+                        <a href="../demandes/create.html">Soumettre une demande</a>
+                        <a href="../demandes/instruire.html">Instruire un dossier</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#ins"><i class="bi bi-person-plus me-3"></i> Inscriptions</button>
+                <div id="ins" class="accordion-collapse collapse" data-bs-parent="#menuAcc">
+                    <div class="accordion-body">
+                        <a href="../inscriptions/inscrire.html">Inscrire un agent</a>
+                        <a href="../inscriptions/annuler.html">Annuler une inscription</a>
+                        <a href="../inscriptions/cloturer.html">Clôturer une session</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-special mt-auto">
+            <a href="../responsables/add.html" class="nav-link text-info small fw-bold text-decoration-none">
+                <i class="bi bi-person-badge me-2"></i> ADMINISTRATION
+            </a>
         </div>
     </div>
-</nav>
 
-<!-- CONTENU -->
-<div class="container">
+    <div id="content">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="fw-bold">👤 Liste des employés</h2>
-        <a href="add.html" class="btn btn-primary">➕ Nouvel employé</a>
-    </div>
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-3">
+            <div>
+                <h2 class="fw-bold mb-1 text-dark">👤 Annuaire du Personnel</h2>
+                <p class="text-muted mb-0">Gérez les informations de contact des collaborateurs.</p>
+            </div>
+            <a href="add.html" class="btn btn-primary px-4 py-2 fw-bold shadow-sm">
+                <i class="bi bi-person-plus me-2"></i> Nouvel employé
+            </a>
+        </div>
 
-    <div class="card shadow">
-        <div class="card-body">
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary bg-opacity-10 p-3 rounded-3 me-3">
+                            <i class="bi bi-people-fill text-primary fs-4"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 text-muted small text-uppercase">Total Employés</h6>
+                            <h4 class="fw-bold mb-0" id="totalEmployes">0</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            <table class="table table-striped table-hover">
-                <thead class="table-dark">
-                <tr>
-                    <th>Numéro</th>
-                    <th>Nom</th>
-                    <th>Adresse</th>
-                </tr>
-                </thead>
-
-                <tbody id="employesTable"></tbody>
-            </table>
-
+        <div class="card shadow-sm table-card">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                    <tr>
+                        <th class="ps-4">ID</th>
+                        <th>Collaborateur</th>
+                        <th>Adresse de résidence</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="employesTable">
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -4,86 +4,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Instruire une demande</title>
+    <title>Instruire une demande - Gestion Pro</title>
 
-    <!-- BOOTSTRAP -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-    <!-- JS -->
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/demandes.js"></script>
 
-    <!-- TON CSS -->
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        :root {
+            --sidebar-bg: #111827;
+            --sidebar-hover: #1f2937;
+            --accent-color: #6366f1;
+        }
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        /* ✅ SIDEBAR STYLE */
+        #sidebar {
+            width: 280px; min-height: 100vh; background: var(--sidebar-bg);
+            position: fixed; color: #f3f4f6; z-index: 1050;
+            border-right: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s;
+        }
+
+        .sidebar-header { padding: 25px 20px; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        .sidebar-link {
+            display: flex; align-items: center; padding: 14px 20px;
+            color: #9ca3af !important; text-decoration: none;
+            font-size: 0.95rem; font-weight: 500; transition: 0.2s;
+        }
+        .sidebar-link:hover { color: white !important; background: var(--sidebar-hover); }
+
+        #sidebar .accordion-item { background: transparent !important; border: none; }
+        #sidebar .accordion-button {
+            background: transparent !important; color: #9ca3af !important;
+            padding: 14px 20px; box-shadow: none !important;
+        }
+        #sidebar .accordion-button:not(.collapsed) { color: white !important; background: var(--sidebar-hover) !important; }
+        #sidebar .accordion-button::after { filter: brightness(0) invert(1); transform: scale(0.8); }
+
+        #sidebar .accordion-body { padding: 5px 0 10px 0; background: rgba(0,0,0,0.1); }
+        #sidebar .accordion-body a {
+            color: #9ca3af; padding: 10px 20px 10px 50px; display: block;
+            text-decoration: none; font-size: 0.9rem; transition: 0.2s;
+        }
+        #sidebar .accordion-body a:hover { color: white; background: rgba(255,255,255,0.05); }
+        #sidebar .accordion-body a.active-link { font-weight: bold; color: var(--accent-color); background: rgba(99, 102, 241, 0.1); }
+
+        .nav-special { margin-top: auto; padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); }
+
+        /* ✅ CONTENT */
+        #content { margin-left: 280px; width: calc(100% - 280px); padding: 40px; min-height: 100vh; }
+        .instruction-card { border: none; border-radius: 12px; max-width: 650px; border-top: 5px solid var(--accent-color); }
+        .form-check-input:checked { background-color: #10b981; border-color: #10b981; }
+        .status-badge { font-size: 0.75rem; letter-spacing: 0.05rem; }
+
+        @media (max-width: 992px) {
+            #sidebar { margin-left: -280px; }
+            #content { margin-left: 0; width: 100%; padding: 20px; }
+            #sidebar.show { margin-left: 0; }
+        }
+    </style>
 </head>
 
 <body onload="loadDemandeForInstr()" class="bg-light">
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container-fluid">
+<div class="d-flex">
 
-        <a class="navbar-brand" href="../index.html">Gestion Formation</a>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="menu">
-            <ul class="navbar-nav ms-auto">
-
-                <li class="nav-item"><a class="nav-link" href="../formations/list.html">Formations</a></li>
-                <li class="nav-item"><a class="nav-link" href="../employes/list.html">Employés</a></li>
-                <li class="nav-item"><a class="nav-link" href="../sessions/list.html">Sessions</a></li>
-                <li class="nav-item"><a class="nav-link active" href="create.html">Demandes</a></li>
-                <li class="nav-item"><a class="nav-link" href="../inscriptions/inscrire.html">Inscriptions</a></li>
-
-            </ul>
+    <div id="sidebar" class="d-flex flex-column">
+        <div class="sidebar-header">
+            <h5 class="mb-0 fw-bold"><i class="bi bi-mortarboard-fill me-2 text-primary"></i> GESTION PRO</h5>
         </div>
 
+        <div class="accordion accordion-flush" id="menuAcc">
+            <div class="accordion-item">
+                <a href="../index.html" class="sidebar-link"><i class="bi bi-speedometer2 me-3"></i> Dashboard</a>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#fm"><i class="bi bi-book me-3"></i> Formations</button>
+                <div id="fm" class="accordion-collapse collapse" data-bs-parent="#menuAcc">
+                    <div class="accordion-body">
+                        <a href="../formations/list.html">Liste</a>
+                        <a href="../formations/add.html">Ajouter</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#emp"><i class="bi bi-people me-3"></i> Employés</button>
+                <div id="emp" class="accordion-collapse collapse" data-bs-parent="#menuAcc">
+                    <div class="accordion-body">
+                        <a href="../employes/list.html">Annuaire</a>
+                        <a href="../employes/add.html">Nouveau</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#ses">
+                    <i class="bi bi-calendar-event me-3"></i> Sessions
+                </button>
+                <div id="ses" class="accordion-collapse collapse" data-bs-parent="#menuAcc">
+                    <div class="accordion-body">
+                        <a href="../sessions/list.html">Liste des sessions</a>
+                        <a href="../sessions/add.html">Créer une session</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-button text-white" data-bs-toggle="collapse" data-bs-target="#dem"><i class="bi bi-file-earmark-text me-3"></i> Demandes</button>
+                <div id="dem" class="accordion-collapse collapse show" data-bs-parent="#menuAcc">
+                    <div class="accordion-body">
+                        <a href="create.html">Soumettre une demande</a>
+                        <a href="instruire.html" class="active-link">Instruire un dossier</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#ins">
+                    <i class="bi bi-person-plus me-3"></i> Inscriptions
+                </button>
+                <div id="ins" class="accordion-collapse collapse" data-bs-parent="#menuAcc">
+                    <div class="accordion-body">
+                        <a href="../inscriptions/inscrire.html">Inscrire un agent</a>
+                        <a href="../inscriptions/annuler.html">Annuler une inscription</a>
+                        <a href="../inscriptions/cloturer.html">Clôturer une session</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-special mt-auto">
+            <a href="../responsables/add.html" class="nav-link text-info small fw-bold text-decoration-none">
+                <i class="bi bi-person-badge me-2"></i> ADMINISTRATION
+            </a>
+        </div>
     </div>
-</nav>
 
-<!-- CONTENU -->
-<div class="container">
+    <div id="content">
 
-    <h2 class="fw-bold mb-3">📝 Instruire une demande</h2>
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb text-muted small">
+                <li class="breadcrumb-item"><a href="../index.html" class="text-decoration-none">Accueil</a></li>
+                <li class="breadcrumb-item">Workflow</li>
+                <li class="breadcrumb-item active">Instruction</li>
+            </ol>
+        </nav>
 
-    <div class="card shadow p-4">
+        <div class="d-flex align-items-center mb-4">
+            <h2 class="fw-bold mb-0">📝 Instruction de Demande</h2>
+            <span class="badge bg-warning text-dark ms-3 status-badge fw-bold px-3 py-2"><i class="bi bi-hourglass-split me-1"></i> EN ATTENTE</span>
+        </div>
 
-        <form onsubmit="event.preventDefault(); instruireDemande();">
-
-            <!-- ID DEMANDE -->
-            <div class="mb-3">
-                <label class="form-label">ID Demande :</label>
-                <input type="number" id="idDemande" class="form-control" readonly>
+        <div class="card shadow-sm instruction-card p-4">
+            <div class="mb-4 border-bottom pb-3">
+                <h5 class="fw-bold text-dark">Décision administrative</h5>
+                <p class="text-muted small">Veuillez renseigner votre identifiant responsable et statuer sur la validité de cette demande.</p>
             </div>
 
-            <!-- ID RESPONSABLE -->
-            <div class="mb-3">
-                <label class="form-label">ID Responsable :</label>
-                <input type="number" id="responsable" class="form-control" placeholder="ex: 1" required>
-            </div>
+            <form onsubmit="event.preventDefault(); instruireDemande();">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small text-uppercase">Référence Dossier</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-key-fill"></i></span>
+                            <input type="number" id="idDemande" class="form-control border-start-0 fw-bold" placeholder="Ex: 101" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small text-uppercase">ID Responsable</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-shield-lock-fill"></i></span>
+                            <input type="number" id="responsable" class="form-control border-start-0" placeholder="Ex: 001" required>
+                        </div>
+                    </div>
+                </div>
 
-            <!-- CHECKBOX -->
-            <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" id="accepter">
-                <label class="form-check-label">
-                    Accepter la demande
-                </label>
-            </div>
+                <div class="card bg-light border-0 p-3 mb-4 mt-4">
+                    <div class="form-check form-switch d-flex align-items-center">
+                        <input class="form-check-input me-3" type="checkbox" role="switch" id="accepter" style="width: 3rem; height: 1.5rem;">
+                        <label class="form-check-label fw-bold text-dark" for="accepter">
+                            <span id="decisionLabel">Rejeter la demande</span>
+                        </label>
+                    </div>
+                    <div class="mt-2 small text-muted ps-5">
+                        <i class="bi bi-info-circle me-1"></i> Actionnez l'interrupteur pour approuver le dossier.
+                    </div>
+                </div>
 
-            <!-- BTN -->
-            <button type="submit" class="btn btn-warning w-100">
-                ✅ Valider l'instruction
-            </button>
-
-        </form>
-
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-warning px-4 py-2 fw-bold flex-grow-1 shadow-sm text-dark">
+                        <i class="bi bi-check-circle-fill me-2"></i> Valider l'instruction
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary px-4" onclick="history.back()">Reporter</button>
+                </div>
+            </form>
+        </div>
     </div>
-
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById('accepter').addEventListener('change', function() {
+        const label = document.getElementById('decisionLabel');
+        label.innerText = this.checked ? "Accepter la demande" : "Rejeter la demande";
+        label.classList.toggle('text-success', this.checked);
+    });
+</script>
 
 </body>
 </html>

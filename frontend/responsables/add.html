@@ -4,98 +4,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Ajouter un responsable</title>
+    <title>Ajouter un responsable - Gestion Pro</title>
 
-    <!-- BOOTSTRAP -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-    <!-- JS -->
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/responsables.js"></script>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        :root {
+            --sidebar-bg: #111827;
+            --sidebar-hover: #1f2937;
+            --accent-color: #3b82f6;
+        }
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        /* ✅ SIDEBAR STYLE (Identique aux autres pages) */
+        #sidebar {
+            width: 280px;
+            min-height: 100vh;
+            background: var(--sidebar-bg);
+            position: fixed;
+            color: #f3f4f6;
+            z-index: 1050;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-right: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            background: rgba(0,0,0,0.2);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .sidebar-link {
+            display: flex; align-items: center; padding: 14px 20px;
+            color: #9ca3af !important; text-decoration: none;
+            font-size: 0.95rem; font-weight: 500; transition: 0.2s;
+        }
+
+        .sidebar-link i { margin-right: 15px; font-size: 1.1rem; }
+        .sidebar-link:hover { color: white !important; background: var(--sidebar-hover); }
+
+        #sidebar .accordion-item { background: transparent !important; border: none; }
+        #sidebar .accordion-button {
+            background: transparent !important; color: #9ca3af !important;
+            padding: 14px 20px; box-shadow: none !important;
+        }
+        #sidebar .accordion-button i { margin-right: 15px; font-size: 1.1rem; }
+        #sidebar .accordion-button:not(.collapsed) { color: white !important; background: var(--sidebar-hover) !important; }
+        #sidebar .accordion-button::after { filter: brightness(0) invert(1); transform: scale(0.8); }
+
+        #sidebar .accordion-body { padding: 5px 0 10px 0; background: rgba(0,0,0,0.1); }
+        #sidebar .accordion-body a {
+            color: #9ca3af; padding: 10px 20px 10px 50px; display: block;
+            text-decoration: none; font-size: 0.9rem; transition: 0.2s; position: relative;
+        }
+        #sidebar .accordion-body a:hover { color: white; background: rgba(255,255,255,0.05); }
+
+        /* ✅ Focus sur l'administration */
+        .nav-special { margin-top: auto; padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(59, 130, 246, 0.05); }
+        .nav-special .active-admin { color: #3b82f6 !important; }
+
+        /* ✅ CONTENT AREA */
+        #content {
+            margin-left: 280px; width: calc(100% - 280px);
+            padding: 40px; min-height: 100vh; transition: all 0.3s;
+        }
+
+        .form-card { border: none; border-radius: 12px; max-width: 650px; }
+
+        /* ✅ MOBILE */
+        @media (max-width: 992px) {
+            #sidebar { margin-left: -280px; }
+            #content { margin-left: 0; width: 100%; padding: 20px; }
+            #sidebar.show { margin-left: 0; }
+            .mobile-nav { display: block !important; }
+        }
+        .mobile-nav { display: none; background: white; padding: 10px 15px; border-bottom: 1px solid #ddd; }
+    </style>
 </head>
 
 <body class="bg-light">
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container-fluid">
+<div class="mobile-nav">
+    <button class="btn btn-outline-dark btn-sm" onclick="toggleSidebar()">
+        <i class="bi bi-list fs-5"></i> Menu
+    </button>
+</div>
 
-        <a class="navbar-brand" href="../index.html">Gestion Formation</a>
+<div class="d-flex">
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <div id="sidebar" class="d-flex flex-column">
+        <div class="sidebar-header">
+            <h5 class="mb-0 fw-bold"><i class="bi bi-mortarboard-fill me-2 text-primary"></i> GESTION PRO</h5>
+        </div>
 
-        <div class="collapse navbar-collapse" id="menu">
-            <ul class="navbar-nav ms-auto">
+        <div class="accordion accordion-flush" id="menuAcc">
+            <div class="accordion-item">
+                <a href="../index.html" class="sidebar-link"><i class="bi bi-speedometer2"></i> Dashboard</a>
+            </div>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="../formations/list.html">Formations</a>
-                </li>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#fm">
+                        <i class="bi bi-book"></i> Formations
+                    </button>
+                </h2>
+                <div id="fm" class="accordion-collapse collapse" data-bs-parent="#menuAcc">
+                    <div class="accordion-body">
+                        <a href="../formations/list.html">Liste des formations</a>
+                        <a href="../formations/add.html">Ajouter une formation</a>
+                    </div>
+                </div>
+            </div>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="../employes/list.html">Employés</a>
-                </li>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#emp">
+                        <i class="bi bi-people"></i> Employés
+                    </button>
+                </h2>
+                <div id="emp" class="accordion-collapse collapse" data-bs-parent="#menuAcc">
+                    <div class="accordion-body">
+                        <a href="../employes/list.html">Annuaire</a>
+                        <a href="../employes/add.html">Nouveau profil</a>
+                    </div>
+                </div>
+            </div>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="../sessions/list.html">Sessions</a>
-                </li>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#ses">
+                        <i class="bi bi-calendar-event"></i> Sessions
+                    </button>
+                </h2>
+                <div id="ses" class="accordion-collapse collapse" data-bs-parent="#menuAcc">
+                    <div class="accordion-body">
+                        <a href="../sessions/list.html">Calendrier</a>
+                        <a href="../sessions/add.html">Créer une session</a>
+                    </div>
+                </div>
+            </div>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="../demandes/create.html">Demandes</a>
-                </li>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#dem">
+                        <i class="bi bi-clipboard-check"></i> Demandes
+                    </button>
+                </h2>
+                <div id="dem" class="accordion-collapse collapse" data-bs-parent="#menuAcc">
+                    <div class="accordion-body">
+                        <a href="../demandes/create.html">Soumettre</a>
+                        <a href="../demandes/instruire.html?id=1">Instructions</a>
+                    </div>
+                </div>
+            </div>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="../inscriptions/inscrire.html">Inscriptions</a>
-                </li>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#ins">
+                        <i class="bi bi-person-plus"></i> Inscriptions
+                    </button>
+                </h2>
+                <div id="ins" class="accordion-collapse collapse" data-bs-parent="#menuAcc">
+                    <div class="accordion-body">
+                        <a href="../inscriptions/inscrire.html">Inscrire un agent</a>
+                        <a href="../inscriptions/annuler.html">Annulations</a>
+                        <a href="../inscriptions/cloturer.html">Clôture</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            </ul>
+        <div class="nav-special mt-auto">
+            <a href="add.html" class="nav-link active-admin small fw-bold text-decoration-none">
+                <i class="bi bi-person-badge-fill me-2"></i> ADMINISTRATION
+            </a>
         </div>
     </div>
-</nav>
 
-<!-- CONTENU -->
-<div class="container">
+    <div id="content">
 
-    <h2 class="fw-bold mb-4">👨‍🏫 Ajouter un Responsable de Formation</h2>
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb text-muted small">
+                <li class="breadcrumb-item"><a href="../index.html" class="text-decoration-none">Dashboard</a></li>
+                <li class="breadcrumb-item active">Administration</li>
+                <li class="breadcrumb-item active" aria-current="page">Nouveau Responsable</li>
+            </ol>
+        </nav>
 
-    <div class="card shadow p-4">
+        <h2 class="fw-bold mb-4">👨‍🏫 Ajouter un Responsable</h2>
 
-        <form onsubmit="event.preventDefault(); addResponsable();">
-
-            <div class="mb-3">
-                <label class="form-label">Numéro :</label>
-                <input type="number" id="num" class="form-control" required>
+        <div class="card shadow-sm form-card p-4">
+            <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
+                    <i class="bi bi-shield-lock text-primary fs-4"></i>
+                </div>
+                <div>
+                    <h5 class="mb-0 fw-bold">Droits d'administration</h5>
+                    <p class="text-muted small mb-0">Enregistrez un nouveau responsable de formation.</p>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Nom :</label>
-                <input type="text" id="nom" class="form-control" required>
-            </div>
+            <form onsubmit="event.preventDefault(); addResponsable();">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold small text-uppercase">Numéro</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-hash text-primary"></i></span>
+                            <input type="number" id="num" class="form-control border-start-0 ps-0" placeholder="001" required>
+                        </div>
+                    </div>
+                    <div class="col-md-8 mb-3">
+                        <label class="form-label fw-bold small text-uppercase">Nom Complet</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-person text-primary"></i></span>
+                            <input type="text" id="nom" class="form-control border-start-0 ps-0" placeholder="Nom et Prénom" required>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">Adresse :</label>
-                <input type="text" id="adresse" class="form-control" required>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-uppercase">Adresse de contact</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-geo-alt text-primary"></i></span>
+                        <input type="text" id="adresse" class="form-control border-start-0 ps-0" placeholder="Ex: Abidjan, Plateau" required>
+                    </div>
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">Date de Nomination :</label>
-                <input type="text" id="dateN" class="form-control" placeholder="2025-03-12" required>
-            </div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold small text-uppercase">Date de Nomination</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-calendar-check text-primary"></i></span>
+                        <input type="text" id="dateN" class="form-control border-start-0 ps-0" placeholder="AAAA-MM-JJ" required>
+                    </div>
+                </div>
 
-            <button type="submit" class="btn btn-primary w-100">
-                ✅ Enregistrer le responsable
-            </button>
-
-        </form>
-
+                <div class="pt-2">
+                    <button type="submit" class="btn btn-primary px-4 py-2 fw-bold w-100 shadow-sm">
+                        <i class="bi bi-check-circle me-2"></i> Enregistrer le responsable
+                    </button>
+                    <div class="text-center mt-3">
+                        <a href="../index.html" class="text-muted small text-decoration-none">Retour au tableau de bord</a>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('show');
+    }
+</script>
 
 </body>
 </html>
