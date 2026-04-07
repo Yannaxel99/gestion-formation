@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestion des Formations</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;}
+    body{font-family:'DM Sans',sans-serif;background:#f4f5f7;color:#1a1d2e;min-height:100vh;margin:0;}
+
+    /* ══ HERO ══ */
+    .hero-dark{background:linear-gradient(135deg,#0e0f14 0%,#1e2029 60%,#16181f 100%);padding:2.5rem 3rem 0;position:relative;overflow:hidden;}
+    .hero-dark::before{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;background:radial-gradient(circle,rgba(232,197,71,0.12) 0%,transparent 70%);border-radius:50%;pointer-events:none;}
+    .hero-dark::after{content:'';position:absolute;bottom:-40px;left:25%;width:200px;height:200px;background:radial-gradient(circle,rgba(78,205,196,0.08) 0%,transparent 70%);border-radius:50%;pointer-events:none;}
+
+    .hero-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.8rem;}
+    .hero-brand{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;color:#e8c547;letter-spacing:-0.3px;}
+
+    /* user pill shown after login */
+    .user-pill{display:none;align-items:center;gap:0.6rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:0.3rem 0.9rem 0.3rem 0.4rem;}
+    .user-pill.show{display:flex;}
+    .user-avatar{width:26px;height:26px;border-radius:50%;background:#e8c547;color:#1a1d2e;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:0.68rem;font-weight:800;flex-shrink:0;}
+    .uname{font-size:0.80rem;font-weight:600;color:#f0f0f0;}
+    .urole{font-size:0.70rem;color:#6b6f7e;}
+    .logout-btn{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#fca5a5;padding:0.28rem 0.75rem;border-radius:7px;font-size:0.73rem;font-family:'Syne',sans-serif;font-weight:600;cursor:pointer;transition:all 0.2s;}
+    .logout-btn:hover{background:rgba(239,68,68,0.22);}
+    .topbar-right{display:flex;align-items:center;gap:0.7rem;}
+
+    .hero-tag{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(232,197,71,0.1);border:1px solid rgba(232,197,71,0.3);color:#e8c547;font-size:0.78rem;font-weight:500;padding:0.35rem 1rem;border-radius:999px;margin-bottom:1.2rem;animation:fadeDown 0.5s ease both;}
+    .hero-title{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;color:#f0f0f0;letter-spacing:-1px;line-height:1.15;margin-bottom:0.5rem;animation:fadeDown 0.5s .05s ease both;}
+    .hero-title em{font-style:normal;color:#e8c547;}
+    .hero-sub{color:#6b6f7e;font-size:0.88rem;line-height:1.6;animation:fadeDown 0.5s .1s ease both;}
+
+    .hero-stats{display:flex;gap:2rem;margin-top:1.8rem;padding-top:1.6rem;border-top:1px solid rgba(255,255,255,0.07);flex-wrap:wrap;animation:fadeDown 0.5s .15s ease both;}
+    .hero-stat{display:flex;flex-direction:column;gap:2px;}
+    .hero-stat-value{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:700;color:#e8c547;line-height:1;}
+    .hero-stat-label{font-size:0.75rem;color:#6b6f7e;}
+
+    /* ══ NAV TABS ══ */
+    .hero-nav{display:flex;gap:0;margin-top:1.8rem;border-bottom:1px solid rgba(255,255,255,0.07);overflow-x:auto;}
+    .hero-nav-btn{padding:0.65rem 1.3rem;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:600;color:#6b6f7e;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer;transition:all 0.2s;white-space:nowrap;position:relative;}
+    .hero-nav-btn:hover{color:#f0f0f0;}
+    .hero-nav-btn.active{color:#e8c547;border-bottom-color:#e8c547;}
+    /* connexion tab has a small dot indicator when not logged in */
+    .nav-login-dot{display:inline-block;width:6px;height:6px;background:#e8c547;border-radius:50%;margin-left:5px;vertical-align:middle;opacity:0.7;}
+
+    /* ══ PAGE BODY ══ */
+    .page-body{padding:2rem 3rem 4rem;}
+    .section-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:1.2rem;}
+
+    .view-panel{display:none;}
+    .view-panel.active{display:block;animation:fadeUp 0.35s ease both;}
+
+    /* ══ ACTION CARDS ══ */
+    .action-card{background:white;border:1px solid #e5e7eb;border-radius:16px;padding:1.5rem;height:100%;transition:all 0.25s;border-top:3px solid var(--card-color,#e8c547);}
+    .action-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.09);}
+    .card-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1rem;}
+    .card-title-text{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:#1a1d2e;margin-bottom:0.4rem;}
+    .card-desc{font-size:0.82rem;color:#6b7280;line-height:1.55;margin-bottom:1.1rem;}
+    .card-actions{display:flex;gap:0.5rem;flex-wrap:wrap;}
+    .btn-card{display:inline-flex;align-items:center;gap:5px;padding:0.38rem 0.9rem;border-radius:8px;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:700;cursor:pointer;text-decoration:none;border:none;transition:all 0.2s;}
+
+    /* ══ CONNEXION PANEL ══ */
+    .connexion-wrap{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;}
+    @media(max-width:860px){.connexion-wrap{grid-template-columns:1fr;}}
+
+    /* login card */
+    .login-card{background:white;border:1px solid #e5e7eb;border-radius:18px;padding:2rem 2rem;}
+
+    /* logged-in space card */
+    .space-card{background:white;border:1px solid #e5e7eb;border-radius:18px;padding:2rem;}
+    .space-card-locked{border-style:dashed;background:#fafafa;}
+
+    .login-section-title{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:#1a1d2e;margin-bottom:1.4rem;padding-bottom:0.9rem;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;gap:0.5rem;}
+
+    /* role pick */
+    .role-pick{display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-bottom:1.3rem;}
+    .role-opt{border:1.5px solid #e5e7eb;border-radius:12px;padding:0.9rem 0.7rem;text-align:center;cursor:pointer;transition:all 0.2s;background:#fafafa;}
+    .role-opt:hover{border-color:#e8c547;background:#fefce8;}
+    .role-opt.selected{border-color:#e8c547;background:#fefce8;}
+    .role-opt .ro-icon{font-size:1.5rem;display:block;margin-bottom:0.35rem;}
+    .role-opt .ro-name{font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;color:#1a1d2e;}
+    .role-opt .ro-desc{font-size:0.70rem;color:#9ca3af;margin-top:2px;}
+
+    .resp-label{display:block;font-size:0.78rem;font-weight:600;color:#6b7280;margin-bottom:5px;}
+    .resp-form-group{margin-bottom:1rem;}
+    .resp-input,.resp-select,.resp-textarea{width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:0.65rem 0.9rem;font-size:0.88rem;font-family:'DM Sans',sans-serif;color:#1a1d2e;outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
+    .resp-input:focus,.resp-select:focus,.resp-textarea:focus{border-color:#e8c547;box-shadow:0 0 0 3px rgba(232,197,71,0.12);background:white;}
+    .resp-textarea{resize:vertical;min-height:72px;}
+    .resp-hint{font-size:0.72rem;color:#9ca3af;margin-top:3px;}
+    .resp-divider{text-align:center;font-size:0.75rem;color:#9ca3af;margin:0.8rem 0;position:relative;}
+    .resp-divider::before,.resp-divider::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:#e5e7eb;}
+    .resp-divider::before{left:0;}.resp-divider::after{right:0;}
+
+    .resp-btn{width:100%;padding:0.75rem;border:none;border-radius:11px;font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px;}
+    .resp-btn+.resp-btn{margin-top:8px;}
+    .resp-btn:disabled{opacity:0.5;cursor:not-allowed;}
+    .resp-btn-primary{background:#e8c547;color:#1a1d2e;}.resp-btn-primary:hover:not(:disabled){background:#f0cf5a;transform:translateY(-1px);}
+    .resp-btn-success{background:rgba(16,185,129,0.1);color:#065f46;border:1px solid rgba(16,185,129,0.25);}.resp-btn-success:hover:not(:disabled){background:#10b981;color:white;}
+    .resp-btn-danger{background:rgba(239,68,68,0.08);color:#991b1b;border:1px solid rgba(239,68,68,0.25);}.resp-btn-danger:hover:not(:disabled){background:#ef4444;color:white;}
+    .resp-btn-outline{background:transparent;color:#374151;border:1px solid #e5e7eb;}.resp-btn-outline:hover:not(:disabled){border-color:#e8c547;color:#92400e;}
+
+    .resp-result{display:none;margin-top:0.9rem;padding:0.9rem 1rem;border-radius:10px;font-size:0.83rem;line-height:1.6;}
+    .resp-result.success{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);color:#065f46;display:block;}
+    .resp-result.error{background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.25);color:#991b1b;display:block;}
+    .resp-result.warning{background:rgba(232,197,71,0.08);border:1px solid rgba(232,197,71,0.25);color:#92400e;display:block;}
+    .resp-result strong{display:block;font-family:'Syne',sans-serif;font-size:0.88rem;margin-bottom:3px;}
+
+    .login-error{display:none;margin-top:0.8rem;padding:0.65rem 0.9rem;border-radius:9px;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);color:#991b1b;font-size:0.82rem;}
+    .login-error.show{display:block;}
+
+    /* locked placeholder */
+    .locked-placeholder{text-align:center;padding:2.5rem 1.5rem;}
+    .locked-icon{font-size:2.8rem;margin-bottom:0.8rem;display:block;opacity:.35;}
+    .locked-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:#9ca3af;margin-bottom:0.4rem;}
+    .locked-sub{font-size:0.82rem;color:#c4c8d0;line-height:1.55;}
+
+    /* ══ CATALOGUE ══ */
+    .catalogue-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1rem;}
+    .formation-card{background:white;border:1px solid #e5e7eb;border-radius:14px;padding:1.4rem;transition:all 0.25s;position:relative;overflow:hidden;}
+    .formation-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#e8c547,#4ecdc4);transform:scaleX(0);transition:transform 0.3s;transform-origin:left;}
+    .formation-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,0.08);border-color:transparent;}
+    .formation-card:hover::before{transform:scaleX(1);}
+    .card-num{font-size:0.72rem;color:#9ca3af;font-family:'Syne',sans-serif;font-weight:600;margin-bottom:0.6rem;}
+    .card-name{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:#1a1d2e;margin-bottom:0.5rem;}
+    .card-desc-text{font-size:0.82rem;color:#6b7280;line-height:1.5;margin-bottom:1rem;}
+    .card-footer-row{display:flex;align-items:center;justify-content:space-between;padding-top:0.8rem;border-top:1px solid #f3f4f6;}
+    .card-badge-pill{background:rgba(78,205,196,0.1);color:#0d9488;font-size:0.72rem;padding:0.25rem 0.7rem;border-radius:999px;font-weight:600;border:1px solid rgba(78,205,196,0.2);}
+    .btn-demander{background:#e8c547;color:#1a1d2e;border:none;border-radius:8px;padding:0.35rem 0.9rem;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:700;cursor:pointer;transition:all 0.2s;}
+    .btn-demander:hover{background:#f0cf5a;transform:translateY(-1px);}
+
+    /* ══ ESPACE PANEL (employé / responsable) ══ */
+    .resp-grid{display:grid;grid-template-columns:340px 1fr;gap:2rem;align-items:start;}
+    @media(max-width:900px){.resp-grid{grid-template-columns:1fr;}.page-body{padding:1.5rem 1.2rem 3rem;}.hero-dark{padding:2rem 1.2rem 0;}}
+    .resp-form-card{background:white;border:1px solid #e5e7eb;border-radius:18px;padding:1.6rem;position:sticky;top:24px;}
+    .resp-form-title{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:#1a1d2e;margin-bottom:1.4rem;padding-bottom:0.9rem;border-bottom:1px solid #f3f4f6;}
+    .resp-list-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+    .resp-list-title{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:#1a1d2e;}
+    .resp-count{background:#f3f4f6;color:#6b7280;font-size:0.72rem;font-weight:600;padding:0.2rem 0.6rem;border-radius:999px;margin-left:6px;}
+    .resp-refresh{background:transparent;border:1px solid #e5e7eb;color:#6b7280;padding:0.35rem 0.9rem;border-radius:8px;font-size:0.78rem;cursor:pointer;transition:all 0.2s;}
+    .resp-refresh:hover{border-color:#e8c547;color:#92400e;}
+    .resp-item{background:white;border:1px solid #e5e7eb;border-radius:12px;padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem;cursor:pointer;transition:all 0.2s;}
+    .resp-item:hover{border-color:#e8c547;transform:translateX(3px);}
+    .resp-item-title{font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;color:#1a1d2e;}
+    .resp-item-sub{font-size:0.78rem;color:#9ca3af;margin-top:2px;}
+    .resp-status{font-size:0.72rem;font-weight:600;font-family:'Syne',sans-serif;padding:0.25rem 0.7rem;border-radius:999px;}
+    .s-attente{background:rgba(232,197,71,0.12);color:#92400e;border:1px solid rgba(232,197,71,0.3);}
+    .s-acceptee{background:rgba(16,185,129,0.1);color:#065f46;border:1px solid rgba(16,185,129,0.25);}
+    .s-refusee{background:rgba(239,68,68,0.08);color:#991b1b;border:1px solid rgba(239,68,68,0.25);}
+
+    .resp-session-card{background:white;border:1px solid #e5e7eb;border-radius:12px;padding:0.9rem 1.2rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem;cursor:pointer;transition:all 0.2s;}
+    .resp-session-card:hover{border-color:#e8c547;}
+    .resp-session-card.selected{border-color:#e8c547;background:#fefce8;}
+    .resp-session-name{font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;color:#1a1d2e;}
+    .resp-session-date{font-size:0.78rem;color:#9ca3af;margin-top:2px;}
+    .resp-session-prix{font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;color:#e8c547;}
+
+    .resp-empty{text-align:center;padding:2.5rem;color:#9ca3af;background:#f9fafb;border-radius:14px;font-size:0.85rem;}
+    .resp-empty .e-icon{font-size:2rem;margin-bottom:0.5rem;}
+
+    /* sub-tabs */
+    .resp-panel{display:none;}.resp-panel.active{display:block;animation:fadeUp 0.3s ease both;}
+    .sub-tabs{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+    .sub-tab-btn{background:white;border:1px solid #e5e7eb;border-radius:8px;padding:0.4rem 1rem;font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:600;color:#6b7280;cursor:pointer;transition:all 0.2s;}
+    .sub-tab-btn:hover{border-color:#e8c547;color:#92400e;}
+    .sub-tab-btn.active{background:#fefce8;border-color:#e8c547;color:#92400e;}
+
+    /* info boxes */
+    .info-box{background:#f0fdf4;border:1px solid rgba(16,185,129,0.25);border-radius:12px;padding:1.2rem 1.4rem;font-size:0.85rem;color:#374151;line-height:1.7;}
+    .info-box-warn{background:#fff8f0;border:1px solid rgba(234,88,12,0.2);border-radius:12px;padding:1.2rem 1.4rem;font-size:0.82rem;color:#6b7280;line-height:1.7;}
+
+    /* ins-dem cards */
+    .ins-dem-card{background:white;border:1.5px solid #e5e7eb;border-radius:14px;padding:1rem 1.2rem;margin-bottom:0.7rem;cursor:pointer;transition:all 0.2s;}
+    .ins-dem-card:hover{border-color:#e8c547;transform:translateX(3px);}
+    .ins-dem-card.selected{border-color:#e8c547;background:#fefce8;}
+    .ins-dem-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.4rem;}
+    .ins-dem-name{font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;color:#1a1d2e;}
+    .ins-dem-sub{font-size:0.78rem;color:#9ca3af;}
+    .ins-dem-badge{font-size:0.72rem;font-weight:600;font-family:'Syne',sans-serif;padding:0.2rem 0.6rem;border-radius:999px;background:rgba(16,185,129,0.1);color:#065f46;border:1px solid rgba(16,185,129,0.25);flex-shrink:0;}
+
+    /* file input */
+    .file-input-wrap{position:relative;width:100%;}
+    .file-input-wrap input[type="file"]{position:absolute;opacity:0;width:100%;height:100%;cursor:pointer;top:0;left:0;z-index:2;}
+    .file-input-fake{width:100%;background:#f9fafb;border:1.5px dashed #d1d5db;border-radius:10px;padding:0.72rem 0.9rem;font-size:0.85rem;font-family:'DM Sans',sans-serif;color:#9ca3af;display:flex;align-items:center;gap:0.5rem;cursor:pointer;transition:all 0.2s;}
+    .file-input-fake:hover{border-color:#e8c547;color:#92400e;background:#fefce8;}
+    .file-input-fake.has-file{border-style:solid;border-color:#10b981;color:#065f46;background:rgba(16,185,129,0.05);}
+    .file-input-fake .fi-icon{font-size:1rem;flex-shrink:0;}
+    .file-input-fake .fi-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+    /* toast */
+    .toast-container-custom{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:0.5rem;}
+    .toast-msg{background:#1a1d2e;color:#f0f0f0;padding:0.8rem 1.3rem;border-radius:10px;font-size:0.85rem;font-family:'Syne',sans-serif;font-weight:600;border-left:4px solid #e8c547;animation:slideIn 0.3s ease,fadeOut 0.4s 2.5s ease forwards;max-width:320px;}
+    .spin-btn{width:14px;height:14px;border:2px solid rgba(0,0,0,0.15);border-top-color:currentColor;border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;}
+
+    @keyframes spin{to{transform:rotate(360deg);}}
+    @keyframes fadeDown{from{opacity:0;transform:translateY(-12px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes slideIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
+    @keyframes fadeOut{to{opacity:0;transform:translateY(10px);}}
+    .anim{animation:fadeUp 0.4s ease both;}.anim-1{animation-delay:.05s;}.anim-2{animation-delay:.10s;}.anim-3{animation-delay:.15s;}.anim-4{animation-delay:.20s;}.anim-5{animation-delay:.25s;}.anim-6{animation-delay:.30s;}
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     HERO (toujours visible)
+══════════════════════════════════════════ -->
+<div class="hero-dark">
+  <div class="hero-topbar">
+    <div class="hero-brand">🎓 GestionFormation</div>
+    <div class="topbar-right">
+      <div class="user-pill" id="user-pill">
+        <div class="user-avatar" id="app-avatar">??</div>
+        <div>
+          <div class="uname" id="app-username">—</div>
+          <div class="urole" id="app-role-label">—</div>
+        </div>
+      </div>
+      <button class="logout-btn" id="logout-btn" style="display:none;" onclick="logout()">
+        <i class="bi bi-box-arrow-right me-1"></i>Déconnexion
+      </button>
+    </div>
+  </div>
+
+  <div class="hero-tag">🎓 Système de gestion des formations</div>
+  <div class="hero-title">Bienvenue sur <em>Gestion Formation</em></div>
+  <div class="hero-sub" id="hero-sub">Gérez l'ensemble du processus de formation depuis un seul espace.</div>
+
+  <div class="hero-stats">
+    <div class="hero-stat"><span class="hero-stat-value" id="statFormations">—</span><span class="hero-stat-label">Formations</span></div>
+    <div class="hero-stat"><span class="hero-stat-value" id="statSessions">—</span><span class="hero-stat-label">Sessions</span></div>
+    <div class="hero-stat"><span class="hero-stat-value" id="statEmployes">—</span><span class="hero-stat-label">Employés</span></div>
+    <div class="hero-stat"><span class="hero-stat-value" id="statDemandes">—</span><span class="hero-stat-label">Demandes</span></div>
+  </div>
+
+  <!-- NAV : Dashboard | Catalogue | Connexion  →  après login : + Mon espace -->
+  <div class="hero-nav" id="hero-nav">
+    <button class="hero-nav-btn active" onclick="switchView('dashboard')">
+      <i class="bi bi-speedometer2 me-1"></i>Dashboard
+    </button>
+    <button class="hero-nav-btn" onclick="switchView('catalogue')">
+      <i class="bi bi-book me-1"></i>Catalogue
+    </button>
+    <button class="hero-nav-btn" id="nav-connexion" onclick="switchView('connexion')">
+      <i class="bi bi-person-lock me-1"></i>Connexion<span class="nav-login-dot" id="login-dot"></span>
+    </button>
+    <!-- tab "Mon espace" injecté dynamiquement après login -->
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE BODY
+══════════════════════════════════════════ -->
+<div class="page-body">
+
+  <!-- ═══ DASHBOARD ═══ -->
+  <div class="view-panel active" id="view-dashboard">
+    <div class="section-title anim anim-1">Aperçu de la plateforme</div>
+    <div class="row g-3 mb-4">
+      <div class="col-12 col-md-6 col-lg-4 anim anim-1">
+        <div class="action-card" style="--card-color:#3b82f6;">
+          <div class="card-icon" style="background:#eff6ff;color:#3b82f6;"><i class="bi bi-book-fill"></i></div>
+          <div class="card-title-text">Catalogue des formations</div>
+          <div class="card-desc">Consultez toutes les formations disponibles proposées par les organismes agréés.</div>
+          <div class="card-actions"><button class="btn-card" style="background:#3b82f6;color:white;" onclick="switchView('catalogue')"><i class="bi bi-list-ul"></i> Voir le catalogue</button></div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-4 anim anim-2">
+        <div class="action-card" style="--card-color:#e8c547;">
+          <div class="card-icon" style="background:#fefce8;color:#ca8a04;"><i class="bi bi-person-fill"></i></div>
+          <div class="card-title-text">Espace Employé</div>
+          <div class="card-desc">Soumettez une demande de formation, gérez vos inscriptions et clôturez vos formations.</div>
+          <div class="card-actions"><button class="btn-card" style="background:#e8c547;color:#1a1d2e;" onclick="switchView('connexion');selRole('employe')"><i class="bi bi-arrow-right-circle"></i> Accéder</button></div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-4 anim anim-3">
+        <div class="action-card" style="--card-color:#8b5cf6;">
+          <div class="card-icon" style="background:#f5f3ff;color:#8b5cf6;"><i class="bi bi-person-badge-fill"></i></div>
+          <div class="card-title-text">Espace Responsable</div>
+          <div class="card-desc">Instruisez les demandes, inscrivez les employés aux sessions et gérez le catalogue.</div>
+          <div class="card-actions"><button class="btn-card" style="background:#8b5cf6;color:white;" onclick="switchView('connexion');selRole('responsable')"><i class="bi bi-arrow-right-circle"></i> Accéder</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guide du processus -->
+    <div class="section-title anim anim-4">Comment ça marche ?</div>
+    <div class="row g-3">
+      <div class="col-12 col-md-6 col-lg-3 anim anim-4">
+        <div class="action-card" style="--card-color:#e8c547;cursor:default;">
+          <div class="card-icon" style="background:#fefce8;color:#ca8a04;font-size:1.4rem;">①</div>
+          <div class="card-title-text">Consulter</div>
+          <div class="card-desc">L'employé consulte le catalogue et soumet une demande de formation au responsable.</div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-3 anim anim-5">
+        <div class="action-card" style="--card-color:#8b5cf6;cursor:default;">
+          <div class="card-icon" style="background:#f5f3ff;color:#8b5cf6;font-size:1.4rem;">②</div>
+          <div class="card-title-text">Instruire</div>
+          <div class="card-desc">Le responsable analyse la demande et communique sa décision : accord ou refus.</div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-3 anim anim-6">
+        <div class="action-card" style="--card-color:#10b981;cursor:default;">
+          <div class="card-icon" style="background:#ecfdf5;color:#10b981;font-size:1.4rem;">③</div>
+          <div class="card-title-text">Inscrire</div>
+          <div class="card-desc">En cas d'accord, le responsable inscrit l'employé à une session de formation disponible.</div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-3 anim anim-6">
+        <div class="action-card" style="--card-color:#3b82f6;cursor:default;">
+          <div class="card-icon" style="background:#eff6ff;color:#3b82f6;font-size:1.4rem;">④</div>
+          <div class="card-title-text">Clôturer</div>
+          <div class="card-desc">À l'issue de la formation, l'employé transmet son attestation et son appréciation.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CATALOGUE ═══ -->
+  <div class="view-panel" id="view-catalogue">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <div class="section-title mb-0">Catalogue des formations</div>
+      <button class="resp-refresh" onclick="chargerCatalogue()">↻ Actualiser</button>
+    </div>
+    <div id="catalogueGrid" class="catalogue-grid">
+      <div class="resp-empty"><div class="e-icon">📚</div>Chargement...</div>
+    </div>
+  </div>
+
+  <!-- ═══ CONNEXION ═══ -->
+  <div class="view-panel" id="view-connexion">
+    <div class="section-title mb-3">Connexion à votre espace</div>
+    <div class="connexion-wrap">
+
+      <!-- Formulaire de login -->
+      <div class="login-card">
+        <div class="login-section-title"><i class="bi bi-person-lock" style="color:#e8c547;"></i> Identifiez-vous</div>
+
+        <div class="role-pick">
+          <div class="role-opt selected" id="ro-employe" onclick="selRole('employe')">
+            <span class="ro-icon">👤</span>
+            <div class="ro-name">Employé</div>
+            <div class="ro-desc">Demandes &amp; inscriptions</div>
+          </div>
+          <div class="role-opt" id="ro-responsable" onclick="selRole('responsable')">
+            <span class="ro-icon">🏫</span>
+            <div class="ro-name">Responsable</div>
+            <div class="ro-desc">Gestion &amp; validation</div>
+          </div>
+        </div>
+
+        <div class="resp-form-group">
+          <label class="resp-label">Numéro d'employé</label>
+          <input class="resp-input" type="number" id="li-num" placeholder="Entrez votre numéro (3 chiffres)" min="100" max="999" onkeydown="if(event.key==='Enter')doLogin()"/>
+          <div class="resp-hint">Votre numéro unique à 3 chiffres</div>
+        </div>
+
+        <button class="resp-btn resp-btn-primary" id="login-btn" onclick="doLogin()">
+          Se connecter →
+        </button>
+        <div class="login-error" id="login-err"></div>
+      </div>
+
+      <!-- Ce qui attend l'utilisateur après connexion -->
+      <div id="connexion-right">
+        <!-- Rempli dynamiquement : locked si pas connecté, contenu si connecté -->
+        <div class="space-card space-card-locked">
+          <div class="locked-placeholder">
+            <span class="locked-icon">🔒</span>
+            <div class="locked-title">Votre espace personnel</div>
+            <div class="locked-sub">Connectez-vous à gauche pour accéder à votre espace et à toutes les fonctionnalités associées à votre rôle.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ MON ESPACE EMPLOYÉ ═══ -->
+  <div class="view-panel" id="view-employe">
+    <div class="section-title mb-3">Mon espace — Employé</div>
+    <div class="sub-tabs" id="empTabs">
+      <button class="sub-tab-btn active" onclick="switchEmpTab('demande',this)"><i class="bi bi-send me-1"></i>Soumettre une demande</button>
+      <button class="sub-tab-btn" onclick="switchEmpTab('inscription',this)"><i class="bi bi-clipboard-check me-1"></i>Mes inscriptions</button>
+    </div>
+
+    <!-- Soumettre -->
+    <div class="resp-panel active" id="etab-demande">
+      <div class="resp-grid">
+        <div class="resp-form-card">
+          <div class="resp-form-title">📋 Soumettre une demande</div>
+          <div class="resp-form-group">
+            <label class="resp-label">Votre N° employé</label>
+            <input class="resp-input" type="number" id="e_emp_id" readonly style="background:#f3f4f6;color:#6b7280;"/>
+          </div>
+          <div class="resp-form-group">
+            <label class="resp-label">Formation souhaitée</label>
+            <select class="resp-select" id="e_formation"><option value="">Sélectionner...</option></select>
+          </div>
+          <div class="resp-form-group">
+            <label class="resp-label">Date de la demande</label>
+            <input class="resp-input" type="date" id="e_date_dem"/>
+          </div>
+          <button class="resp-btn resp-btn-primary" id="btnSoumettre" onclick="soumettreDemandeEmp()">Soumettre ma demande →</button>
+          <div class="resp-result" id="res_dem"></div>
+        </div>
+        <div>
+          <div class="resp-list-header">
+            <div class="resp-list-title">Formations disponibles <span class="resp-count" id="cnt_form_emp">0</span></div>
+            <button class="resp-refresh" onclick="chargerFormationsEmp()">↻</button>
+          </div>
+          <div id="list_formations_emp"><div class="resp-empty"><div class="e-icon">📚</div>Chargement...</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mes inscriptions -->
+    <div class="resp-panel" id="etab-inscription">
+      <div class="resp-grid">
+        <div style="display:flex;flex-direction:column;gap:1.2rem;">
+          <!-- Empêchement -->
+          <div class="resp-form-card">
+            <div class="resp-form-title">🚫 Signaler un empêchement</div>
+            <div style="font-size:0.82rem;background:rgba(234,179,8,0.08);border-radius:8px;color:#92400e;padding:.6rem .9rem;margin-bottom:1rem;">
+              <i class="bi bi-exclamation-triangle me-1"></i>Signalez votre empêchement <strong>au plus vite</strong>.
+            </div>
+            <div class="resp-form-group">
+              <label class="resp-label">N° de votre demande</label>
+              <input class="resp-input" type="number" id="e_ann_dem" placeholder="ex: 1"/>
+              <div class="resp-hint">Numéro reçu lors de la soumission de votre demande</div>
+            </div>
+            <button class="resp-btn resp-btn-danger" id="btnEmpAnnuler" onclick="empAnnuler()">🚫 Signaler l'empêchement</button>
+            <div class="resp-result" id="res_e_ann"></div>
+          </div>
+          <!-- Clôturer -->
+          <div class="resp-form-card">
+            <div class="resp-form-title">🎓 Clôturer ma formation</div>
+            <div class="resp-form-group">
+              <label class="resp-label">N° de votre demande</label>
+              <input class="resp-input" type="number" id="e_clo_dem" placeholder="ex: 1"/>
+            </div>
+            <div class="resp-form-group">
+              <label class="resp-label">Mon appréciation</label>
+              <textarea class="resp-textarea" id="e_clo_app" placeholder="Très enrichissant, bonne pédagogie..."></textarea>
+            </div>
+            <div class="resp-form-group">
+              <label class="resp-label">Attestation de présence (PDF)</label>
+              <div class="file-input-wrap">
+                <input type="file" id="e_clo_file" accept=".pdf,application/pdf" onchange="onFileChange('e_clo_file','e_clo_fake','e_clo_doc')"/>
+                <div class="file-input-fake" id="e_clo_fake"><span class="fi-icon">📎</span><span class="fi-text">Cliquer pour joindre un PDF…</span></div>
+              </div>
+              <input type="hidden" id="e_clo_doc"/>
+            </div>
+            <button class="resp-btn resp-btn-success" id="btnEmpCloturer" onclick="empCloturer()">🎓 Transmettre et clôturer</button>
+            <div class="resp-result" id="res_e_clo"></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:1.2rem;">
+          <div class="info-box">
+            <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.6rem;color:#065f46;">📄 Documents requis à la clôture</div>
+            ✅ Une <strong>appréciation</strong> sur la formation suivie<br/>
+            ✅ Une <strong>attestation PDF</strong> prouvant votre présence
+          </div>
+          <div class="info-box-warn">
+            <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.6rem;color:#9a3412;">⚠️ En cas d'empêchement</div>
+            Signalez-vous <strong>immédiatement</strong> avec votre <strong>N° de demande</strong> pour que le responsable puisse annuler votre inscription.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ MON ESPACE RESPONSABLE ═══ -->
+  <div class="view-panel" id="view-responsable">
+    <div class="section-title mb-3">Mon espace — Responsable de formation</div>
+    <div class="sub-tabs" id="respTabs">
+      <button class="sub-tab-btn active" onclick="switchRespTab('demandes',this)">📋 Demandes</button>
+      <button class="sub-tab-btn" onclick="switchRespTab('inscrire',this)">✅ Inscrire</button>
+      <button class="sub-tab-btn" onclick="switchRespTab('annuler',this)">🚫 Annuler</button>
+      <button class="sub-tab-btn" onclick="switchRespTab('cloturer',this)">🎓 Clôturer</button>
+      <button class="sub-tab-btn" onclick="switchRespTab('catalogue-resp',this)">📚 Catalogue</button>
+      <button class="sub-tab-btn" onclick="switchRespTab('sessions-resp',this)">📅 Sessions</button>
+      <button class="sub-tab-btn" onclick="switchRespTab('employes-resp',this)">👤 Employés</button>
+    </div>
+
+    <!-- Demandes -->
+    <div class="resp-panel active" id="rtab-demandes">
+      <div class="resp-grid">
+        <div class="resp-form-card">
+          <div class="resp-form-title">⚖️ Instruire une demande</div>
+          <div class="resp-form-group">
+            <label class="resp-label">N° Demande</label>
+            <input class="resp-input" type="number" id="inst_id" placeholder="← Cliquer sur une demande"/>
+            <div class="resp-hint">Cliquez sur une demande dans la liste</div>
+          </div>
+          <div class="resp-form-group">
+            <label class="resp-label">ID Responsable</label>
+            <input class="resp-input" type="number" id="inst_resp" readonly style="background:#f3f4f6;color:#6b7280;"/>
+          </div>
+          <div class="resp-divider">Décision</div>
+          <button class="resp-btn resp-btn-success" id="btnAccepter" onclick="instruire(true)">✅ Accepter</button>
+          <button class="resp-btn resp-btn-danger"  id="btnRefuser"  onclick="instruire(false)">❌ Refuser</button>
+          <div class="resp-result" id="res_inst"></div>
+        </div>
+        <div>
+          <div class="resp-list-header">
+            <div class="resp-list-title">Demandes reçues <span class="resp-count" id="cnt_dem">0</span></div>
+            <button class="resp-refresh" onclick="chargerDemandes()">↻</button>
+          </div>
+          <div id="list_demandes"><div class="resp-empty"><div class="e-icon">📋</div>Chargement...</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inscrire -->
+    <div class="resp-panel" id="rtab-inscrire">
+      <div class="resp-grid">
+        <div class="resp-form-card">
+          <div class="resp-form-title">✍️ Inscrire un employé</div>
+          <div class="resp-form-group">
+            <label class="resp-label">Demande sélectionnée</label>
+            <input class="resp-input" type="number" id="ins_dem" placeholder="← Cliquer sur une demande" readonly style="background:#f3f4f6;color:#6b7280;"/>
+            <div class="resp-hint">Cliquez sur une demande acceptée à droite</div>
+          </div>
+          <div class="resp-form-group">
+            <label class="resp-label">Session de formation</label>
+            <select class="resp-select" id="ins_ses"><option value="">Sélectionner une session...</option></select>
+          </div>
+          <div class="resp-form-group">
+            <label class="resp-label">Date d'inscription</label>
+            <input class="resp-input" type="date" id="ins_date"/>
+          </div>
+          <button class="resp-btn resp-btn-primary" id="btnInscrire" onclick="inscrire()">Valider l'inscription →</button>
+          <div class="resp-result" id="res_ins"></div>
+        </div>
+        <div>
+          <div class="resp-list-header">
+            <div class="resp-list-title">Demandes acceptées <span class="resp-count" id="cnt_acc">0</span></div>
+            <button class="resp-refresh" onclick="chargerDemandesAcceptees()">↻</button>
+          </div>
+          <div id="list_dem_acceptees"><div class="resp-empty"><div class="e-icon">📋</div>Chargement...</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Annuler -->
+    <div class="resp-panel" id="rtab-annuler">
+      <div class="resp-grid">
+        <div class="resp-form-card">
+          <div class="resp-form-title">🚫 Annuler une inscription</div>
+          <div style="font-size:0.82rem;background:rgba(234,179,8,0.08);border-radius:8px;color:#92400e;padding:.6rem .9rem;margin-bottom:1rem;"><i class="bi bi-exclamation-triangle me-1"></i>L'annulation est <strong>irréversible</strong>.</div>
+          <div class="resp-form-group">
+            <label class="resp-label">N° de la demande</label>
+            <input class="resp-input" type="number" id="ann_dem" placeholder="ex: 1"/>
+            <div class="resp-hint">Numéro de la demande dont l'inscription doit être annulée</div>
+          </div>
+          <button class="resp-btn resp-btn-danger" id="btnAnnuler" onclick="annuler()">🚫 Annuler l'inscription</button>
+          <div class="resp-result" id="res_ann"></div>
+        </div>
+        <div class="resp-form-card" style="background:#fff8f8;border-color:rgba(239,68,68,0.2);">
+          <div class="resp-form-title" style="color:#991b1b;">ℹ️ Conditions</div>
+          <p style="font-size:0.85rem;color:#6b7280;line-height:1.6;">L'employé doit signaler son empêchement <strong>au plus vite</strong>. Le responsable est chargé de demander l'annulation de l'inscription auprès de l'organisme.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Clôturer -->
+    <div class="resp-panel" id="rtab-cloturer">
+      <div class="resp-grid">
+        <div class="resp-form-card">
+          <div class="resp-form-title">🎓 Clôturer une formation</div>
+          <div class="resp-form-group">
+            <label class="resp-label">N° de la demande</label>
+            <input class="resp-input" type="number" id="clo_dem" placeholder="ex: 1"/>
+          </div>
+          <div class="resp-form-group">
+            <label class="resp-label">Appréciation</label>
+            <textarea class="resp-textarea" id="clo_app" placeholder="Retour de l'employé..."></textarea>
+          </div>
+          <div class="resp-form-group">
+            <label class="resp-label">Attestation / Document (PDF)</label>
+            <div class="file-input-wrap">
+              <input type="file" id="clo_file" accept=".pdf,application/pdf" onchange="onFileChange('clo_file','clo_fake','clo_doc')"/>
+              <div class="file-input-fake" id="clo_fake"><span class="fi-icon">📎</span><span class="fi-text">Cliquer pour joindre un PDF…</span></div>
+            </div>
+            <input type="hidden" id="clo_doc"/>
+          </div>
+          <button class="resp-btn resp-btn-success" id="btnCloturer" onclick="cloturer()">🎓 Clôturer la formation</button>
+          <div class="resp-result" id="res_clo"></div>
+        </div>
+        <div class="resp-form-card" style="background:#f0fdf4;border-color:rgba(16,185,129,0.2);">
+          <div class="resp-form-title" style="color:#065f46;">📄 Documents requis</div>
+          <p style="font-size:0.85rem;color:#6b7280;line-height:1.7;">✅ Une <strong>appréciation</strong> sur la formation<br/>✅ Un <strong>document PDF</strong> de présence<br/><br/>Le responsable contrôle ensuite la <strong>facture</strong> de l'organisme.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Catalogue resp -->
+    <div class="resp-panel" id="rtab-catalogue-resp">
+      <div class="resp-grid">
+        <div class="resp-form-card">
+          <div class="resp-form-title">📚 Ajouter une formation</div>
+          <div class="resp-form-group"><label class="resp-label">ID Formation</label><input class="resp-input" type="number" id="for_id" placeholder="ex: 7"/></div>
+          <div class="resp-form-group"><label class="resp-label">Nom</label><input class="resp-input" type="text" id="for_nom" placeholder="ex: Formation Python"/></div>
+          <div class="resp-form-group"><label class="resp-label">Description</label><textarea class="resp-textarea" id="for_contenu" placeholder="Contenu..."></textarea></div>
+          <button class="resp-btn resp-btn-primary" id="btnAjouterFormation" onclick="ajouterFormation()">+ Ajouter au catalogue</button>
+          <div class="resp-result" id="res_for"></div>
+        </div>
+        <div>
+          <div class="resp-list-header"><div class="resp-list-title">Catalogue <span class="resp-count" id="cnt_for">0</span></div><button class="resp-refresh" onclick="chargerListeFormations()">↻</button></div>
+          <div id="list_formations_resp"><div class="resp-empty"><div class="e-icon">📚</div>Chargement...</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sessions resp -->
+    <div class="resp-panel" id="rtab-sessions-resp">
+      <div class="resp-grid">
+        <div class="resp-form-card">
+          <div class="resp-form-title">📅 Ajouter une session</div>
+          <div class="resp-form-group"><label class="resp-label">ID Session</label><input class="resp-input" type="number" id="ses_id" placeholder="ex: 6"/></div>
+          <div class="resp-form-group"><label class="resp-label">Date</label><input class="resp-input" type="date" id="ses_date"/></div>
+          <div class="resp-form-group"><label class="resp-label">Prix (FCFA)</label><input class="resp-input" type="number" id="ses_prix" placeholder="ex: 150000"/></div>
+          <button class="resp-btn resp-btn-primary" id="btnAjouterSession" onclick="ajouterSession()">+ Ajouter la session</button>
+          <div class="resp-result" id="res_ses"></div>
+        </div>
+        <div>
+          <div class="resp-list-header"><div class="resp-list-title">Sessions <span class="resp-count" id="cnt_ses">0</span></div><button class="resp-refresh" onclick="chargerListeSessions()">↻</button></div>
+          <div id="list_sessions_resp"><div class="resp-empty"><div class="e-icon">📅</div>Chargement...</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Employés resp -->
+    <div class="resp-panel" id="rtab-employes-resp">
+      <div class="resp-grid">
+        <div class="resp-form-card">
+          <div class="resp-form-title">👤 Ajouter un employé</div>
+          <div class="resp-form-group"><label class="resp-label">ID</label><input class="resp-input" type="number" id="emp_id" placeholder="ex: 345"/></div>
+          <div class="resp-form-group"><label class="resp-label">Nom</label><input class="resp-input" type="text" id="emp_nom" placeholder="ex: Konan Aya"/></div>
+          <div class="resp-form-group"><label class="resp-label">Adresse</label><input class="resp-input" type="text" id="emp_adr" placeholder="ex: Abidjan Yopougon"/></div>
+          <button class="resp-btn resp-btn-primary" id="btnAjouterEmploye" onclick="ajouterEmploye()">+ Ajouter l'employé</button>
+          <div class="resp-divider">Ajouter un responsable</div>
+          <div class="resp-form-group"><label class="resp-label">ID Responsable</label><input class="resp-input" type="number" id="resp_id" placeholder="ex: 512"/></div>
+          <div class="resp-form-group"><label class="resp-label">Nom</label><input class="resp-input" type="text" id="resp_nom" placeholder="ex: Dupont"/></div>
+          <div class="resp-form-group"><label class="resp-label">Adresse</label><input class="resp-input" type="text" id="resp_adr" placeholder="ex: Abidjan Cocody"/></div>
+          <div class="resp-form-group"><label class="resp-label">Date de nomination</label><input class="resp-input" type="date" id="resp_date"/></div>
+          <button class="resp-btn resp-btn-outline" id="btnAjouterResponsable" onclick="ajouterResponsable()">+ Ajouter le responsable</button>
+          <div class="resp-result" id="res_emp"></div>
+        </div>
+        <div>
+          <div class="resp-list-header"><div class="resp-list-title">Employés <span class="resp-count" id="cnt_emp">0</span></div><button class="resp-refresh" onclick="chargerListeEmployes()">↻</button></div>
+          <div id="list_employes_resp"><div class="resp-empty"><div class="e-icon">👤</div>Chargement...</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /view-responsable -->
+
+</div><!-- /page-body -->
+
+<div class="toast-container-custom" id="toastContainer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const API = "http://localhost:8080/api";
+let currentUser = null;
+let currentRole = null;
+
+/* ── API ── */
+async function apiFetch(path, opts={}) {
+  const r = await fetch(API+path, {headers:{"Content-Type":"application/json"},...opts});
+  if(!r.ok){const t=await r.text();throw new Error(t||r.statusText);}
+  return r.json();
+}
+const getFormations = () => apiFetch("/formations");
+const getSessions   = () => apiFetch("/sessions");
+const getEmployes   = () => apiFetch("/employes");
+const getDemandes   = () => apiFetch("/demandes");
+
+/* ── NAVIGATION ── */
+function switchView(name) {
+  document.querySelectorAll('.view-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.hero-nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+
+  // active tab
+  const tabMap = {dashboard:0, catalogue:1, connexion:2, employe:3, responsable:3};
+  const btns = document.querySelectorAll('.hero-nav-btn');
+  if(btns[tabMap[name]]) btns[tabMap[name]].classList.add('active');
+
+  if(name==='catalogue')   chargerCatalogue();
+  if(name==='employe')     { chargerFormationsEmp(); document.getElementById('e_date_dem').valueAsDate=new Date(); }
+  if(name==='responsable') { chargerDemandes(); chargerDemandesAcceptees(); chargerSessionsInscrire(); }
+}
+
+/* ── LOGIN ── */
+let selectedRole = 'employe';
+
+function selRole(r) {
+  selectedRole = r;
+  document.getElementById('ro-employe').classList.toggle('selected', r==='employe');
+  document.getElementById('ro-responsable').classList.toggle('selected', r==='responsable');
+}
+
+async function doLogin() {
+  const num = parseInt(document.getElementById('li-num').value);
+  const errEl = document.getElementById('login-err');
+  const btn = document.getElementById('login-btn');
+  errEl.classList.remove('show');
+
+  if(!num||num<100||num>999){
+    errEl.textContent="Entrez un numéro valide (3 chiffres)."; errEl.classList.add('show'); return;
+  }
+  btn.disabled=true; btn.innerHTML='<span class="spin-btn" style="border-top-color:#1a1d2e;"></span>';
+
+  try {
+    const employes = await getEmployes();
+    const emp = employes.find(e=>e.numeroEmploye===num);
+    if(!emp){errEl.textContent=`Employé #${num} introuvable.`; errEl.classList.add('show'); btn.disabled=false; btn.innerHTML='Se connecter →'; return;}
+
+    const isResp = !!emp.dateNomination;
+    if(selectedRole==='responsable'&&!isResp){errEl.textContent=`#${num} est un employé, pas un responsable.`; errEl.classList.add('show'); btn.disabled=false; btn.innerHTML='Se connecter →'; return;}
+    if(selectedRole==='employe'&&isResp){errEl.textContent=`#${num} est un responsable. Choisissez le rôle Responsable.`; errEl.classList.add('show'); btn.disabled=false; btn.innerHTML='Se connecter →'; return;}
+
+    currentUser=emp; currentRole=selectedRole;
+    afterLogin();
+  } catch(e){errEl.textContent='Erreur serveur : '+e.message; errEl.classList.add('show'); btn.disabled=false; btn.innerHTML='Se connecter →';}
+}
+
+function afterLogin() {
+  const prenom = currentUser.nom.split(' ')[0];
+
+  // topbar pill
+  document.getElementById('app-avatar').textContent = prenom.substring(0,2).toUpperCase();
+  document.getElementById('app-username').textContent = currentUser.nom;
+  document.getElementById('app-role-label').textContent = currentRole==='responsable' ? 'Responsable' : 'Employé';
+  document.getElementById('user-pill').classList.add('show');
+  document.getElementById('logout-btn').style.display='flex';
+
+  // masquer le point sur "Connexion"
+  document.getElementById('login-dot').style.display='none';
+
+  // ajouter l'onglet "Mon espace" si absent
+  if(!document.getElementById('nav-monespace')){
+    const nav = document.getElementById('hero-nav');
+    const btn = document.createElement('button');
+    btn.className='hero-nav-btn'; btn.id='nav-monespace';
+    btn.innerHTML=`<i class="bi bi-${currentRole==='responsable'?'person-badge':'person'} me-1"></i>Mon espace`;
+    btn.onclick = () => switchView(currentRole==='responsable'?'responsable':'employe');
+    nav.appendChild(btn);
+  }
+
+  // afficher le résumé à droite dans le panel connexion
+  const right = document.getElementById('connexion-right');
+  const spaceView = currentRole==='responsable' ? 'responsable' : 'employe';
+  const icon = currentRole==='responsable' ? '🏫' : '👤';
+  const actions = currentRole==='responsable'
+    ? '<li>Instruire les demandes</li><li>Inscrire un employé à une session</li><li>Annuler / clôturer une formation</li><li>Gérer le catalogue &amp; les sessions</li>'
+    : '<li>Soumettre une demande de formation</li><li>Signaler un empêchement</li><li>Clôturer ma formation</li>';
+  right.innerHTML=`
+    <div class="space-card">
+      <div class="login-section-title" style="color:#065f46;">${icon} Connecté en tant que ${currentRole==='responsable'?'Responsable':'Employé'}</div>
+      <div style="margin-bottom:1rem;">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;color:#1a1d2e;">${currentUser.nom}</div>
+        <div style="font-size:0.82rem;color:#9ca3af;">N° ${currentUser.numeroEmploye}</div>
+      </div>
+      <div style="font-size:0.85rem;color:#374151;margin-bottom:1.2rem;">
+        <strong style="font-family:'Syne',sans-serif;font-size:0.78rem;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:.5rem;">Vos fonctionnalités</strong>
+        <ul style="padding-left:1.2rem;margin:0;line-height:2;">${actions}</ul>
+      </div>
+      <button class="resp-btn resp-btn-primary" onclick="switchView('${spaceView}')">
+        <i class="bi bi-arrow-right-circle me-1"></i>Accéder à mon espace
+      </button>
+    </div>`;
+
+  // préremplir les champs auto
+  if(currentRole==='employe') {
+    document.getElementById('e_emp_id').value=currentUser.numeroEmploye;
+  } else {
+    document.getElementById('inst_resp').value=currentUser.numeroEmploye;
+  }
+
+  showToast(`Bienvenue, ${prenom} ! 👋`);
+
+  // reset btn
+  document.getElementById('login-btn').disabled=false;
+  document.getElementById('login-btn').innerHTML='Se connecter →';
+}
+
+function logout() {
+  currentUser=null; currentRole=null;
+  document.getElementById('user-pill').classList.remove('show');
+  document.getElementById('logout-btn').style.display='none';
+  document.getElementById('login-dot').style.display='';
+  document.getElementById('li-num').value='';
+  document.getElementById('login-err').classList.remove('show');
+  // remove "Mon espace" tab
+  const t = document.getElementById('nav-monespace');
+  if(t) t.remove();
+  // reset right panel
+  document.getElementById('connexion-right').innerHTML=`
+    <div class="space-card space-card-locked">
+      <div class="locked-placeholder">
+        <span class="locked-icon">🔒</span>
+        <div class="locked-title">Votre espace personnel</div>
+        <div class="locked-sub">Connectez-vous à gauche pour accéder à votre espace et à toutes les fonctionnalités associées à votre rôle.</div>
+      </div>
+    </div>`;
+  selRole('employe');
+  switchView('dashboard');
+}
+
+/* ── STATS ── */
+async function chargerStats() {
+  try {
+    const [f,s,e,d]=await Promise.all([getFormations(),getSessions(),getEmployes(),getDemandes()]);
+    document.getElementById('statFormations').textContent=f.length;
+    document.getElementById('statSessions').textContent=s.length;
+    document.getElementById('statEmployes').textContent=e.length;
+    document.getElementById('statDemandes').textContent=d.length;
+  } catch(_){}
+}
+
+/* ── CATALOGUE ── */
+async function chargerCatalogue() {
+  const grid=document.getElementById('catalogueGrid');
+  grid.innerHTML=`<div class="resp-empty"><div class="e-icon">📚</div>Chargement...</div>`;
+  try {
+    const data=await getFormations();
+    if(!data.length){grid.innerHTML=`<div class="resp-empty"><div class="e-icon">📭</div>Aucune formation</div>`;return;}
+    grid.innerHTML=data.map(f=>`
+      <div class="formation-card">
+        <div class="card-num">FORMATION #${f.numeroFormation}</div>
+        <div class="card-name">${f.nomFormation}</div>
+        <div class="card-desc-text">${f.contenuTexte||'Aucune description.'}</div>
+        <div class="card-footer-row">
+          <span class="card-badge-pill">Disponible</span>
+          ${currentRole==='employe'?`<button class="btn-demander" onclick="switchView('employe');switchEmpTab('demande');document.getElementById('e_formation').value='${f.numeroFormation}'">Demander →</button>`:''}
+        </div>
+      </div>`).join('');
+  } catch(e){grid.innerHTML=`<div class="resp-empty"><div class="e-icon">⚠️</div>Erreur de chargement</div>`;}
+}
+
+/* ── EMPLOYÉ ── */
+function switchEmpTab(name,btn) {
+  document.querySelectorAll('#etab-demande,#etab-inscription').forEach(p=>p.classList.remove('active'));
+  document.getElementById('etab-'+name).classList.add('active');
+  document.querySelectorAll('#empTabs .sub-tab-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  else document.querySelectorAll('#empTabs .sub-tab-btn')[{demande:0,inscription:1}[name]]?.classList.add('active');
+}
+
+async function chargerFormationsEmp() {
+  const c=document.getElementById('list_formations_emp');
+  const sel=document.getElementById('e_formation');
+  try {
+    const data=await getFormations();
+    document.getElementById('cnt_form_emp').textContent=data.length;
+    sel.innerHTML=`<option value="">Sélectionner...</option>`+data.map(f=>`<option value="${f.numeroFormation}">${f.nomFormation}</option>`).join('');
+    c.innerHTML=data.map(f=>`<div class="resp-item" onclick="document.getElementById('e_formation').value='${f.numeroFormation}'"><div><div class="resp-item-title">${f.nomFormation}</div><div class="resp-item-sub">${(f.contenuTexte||'').substring(0,80)}${f.contenuTexte&&f.contenuTexte.length>80?'…':''}</div></div><span style="font-size:0.75rem;color:#9ca3af;font-family:'Syne',sans-serif;">#${f.numeroFormation}</span></div>`).join('')||`<div class="resp-empty"><div class="e-icon">📭</div>Aucune formation</div>`;
+  } catch(e){c.innerHTML=`<div class="resp-empty"><div class="e-icon">⚠️</div>Erreur</div>`;}
+}
+
+async function soumettreDemandeEmp() {
+  const emp=document.getElementById('e_emp_id').value,form=document.getElementById('e_formation').value,date=document.getElementById('e_date_dem').value,res=document.getElementById('res_dem');
+  if(!form||!date){showResult(res,'<strong>⚠️ Sélectionnez une formation et une date</strong>','error');return;}
+  setBtnLoading('btnSoumettre',true);
+  try {
+    const d=await apiFetch('/demandes',{method:'POST',body:JSON.stringify({idEmploye:String(emp),idFormation:String(form),dateDemande:date})});
+    showResult(res,`<strong>✅ Demande #${d.numeroDemande} soumise !</strong>Statut : ${d.statut}`,'success');
+    showToast('Demande soumise !'); chargerStats();
+  } catch(e){showResult(res,`<strong>❌ Erreur</strong>${e.message}`,'error');}
+  finally{setBtnLoading('btnSoumettre',false,'Soumettre ma demande →');}
+}
+
+async function resolveInscriptionId(demandeId) {
+  const demandes=await getDemandes();
+  const dem=demandes.find(d=>d.numeroDemande==demandeId);
+  if(!dem) throw new Error(`Demande #${demandeId} introuvable.`);
+  if(!dem.inscription) throw new Error(`La demande #${demandeId} n'a pas encore d'inscription associée.`);
+  return dem.inscription.idInscription;
+}
+
+async function empAnnuler() {
+  const demId=document.getElementById('e_ann_dem').value,res=document.getElementById('res_e_ann');
+  if(!demId){showResult(res,'<strong>⚠️ Entrez votre N° de demande</strong>','error');return;}
+  setBtnLoading('btnEmpAnnuler',true);
+  try {
+    const insId=await resolveInscriptionId(demId);
+    const ins=await apiFetch(`/inscriptions/${insId}/annuler`,{method:'PUT'});
+    showResult(res,`<strong>🚫 Signalé</strong>Inscription #${ins.idInscription} — ${ins.statut}`,'warning');
+    showToast('Empêchement signalé');
+  } catch(e){showResult(res,`<strong>❌ Erreur</strong>${e.message}`,'error');}
+  finally{setBtnLoading('btnEmpAnnuler',false,"🚫 Signaler l'empêchement");}
+}
+
+async function empCloturer() {
+  const demId=document.getElementById('e_clo_dem').value,app=document.getElementById('e_clo_app').value,doc=document.getElementById('e_clo_doc').value,res=document.getElementById('res_e_clo');
+  if(!demId||!app||!doc){showResult(res,"<strong>⚠️ Remplis tous les champs et joignez l'attestation</strong>",'error');return;}
+  setBtnLoading('btnEmpCloturer',true);
+  try {
+    const insId=await resolveInscriptionId(demId);
+    const ins=await apiFetch(`/inscriptions/${insId}/cloturer`,{method:'PUT',body:JSON.stringify({appreciation:app,document:doc})});
+    showResult(res,`<strong>🎓 Clôturée !</strong>Inscription #${ins.idInscription} — ${ins.statut}`,'success');
+    showToast('Formation clôturée !');
+  } catch(e){showResult(res,`<strong>❌ Erreur</strong>${e.message}`,'error');}
+  finally{setBtnLoading('btnEmpCloturer',false,'🎓 Transmettre et clôturer');}
+}
+
+/* ── RESPONSABLE ── */
+function switchRespTab(name,btn) {
+  document.querySelectorAll('[id^="rtab-"]').forEach(p=>p.classList.remove('active'));
+  document.getElementById('rtab-'+name).classList.add('active');
+  document.querySelectorAll('#respTabs .sub-tab-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  else{const m={demandes:0,inscrire:1,annuler:2,cloturer:3,'catalogue-resp':4,'sessions-resp':5,'employes-resp':6};document.querySelectorAll('#respTabs .sub-tab-btn')[m[name]]?.classList.add('active');}
+  if(name==='catalogue-resp') chargerListeFormations();
+  if(name==='sessions-resp') chargerListeSessions();
+  if(name==='employes-resp') chargerListeEmployes();
+  if(name==='inscrire'){chargerDemandesAcceptees();chargerSessionsInscrire();}
+}
+
+async function chargerDemandes() {
+  const c=document.getElementById('list_demandes');
+  try {
+    const data=await getDemandes();
+    document.getElementById('cnt_dem').textContent=data.length;
+    if(!data.length){c.innerHTML=`<div class="resp-empty"><div class="e-icon">📋</div>Aucune demande</div>`;return;}
+    const sc={'en attente':'s-attente','acceptee':'s-acceptee','refusee':'s-refusee'};
+    c.innerHTML=data.map(d=>`<div class="resp-item" onclick="document.getElementById('inst_id').value='${d.numeroDemande}'"><div><div class="resp-item-title">Demande #${d.numeroDemande}</div><div class="resp-item-sub">${d.employe?d.employe.nom:'—'} • ${d.formation?d.formation.nomFormation:'—'} • ${d.dateDemande}</div></div><span class="resp-status ${sc[(d.statut||'').toLowerCase()]||''}">${d.statut}</span></div>`).join('');
+  } catch(e){c.innerHTML=`<div class="resp-empty"><div class="e-icon">⚠️</div>Erreur</div>`;}
+}
+
+async function instruire(accepter) {
+  const id=document.getElementById('inst_id').value,resp=document.getElementById('inst_resp').value,res=document.getElementById('res_inst');
+  if(!id){showResult(res,'<strong>⚠️ Sélectionnez une demande</strong>','error');return;}
+  const btnId=accepter?'btnAccepter':'btnRefuser';
+  setBtnLoading(btnId,true);
+  try {
+    const d=await apiFetch(`/demandes/${id}/instruire`,{method:'PUT',body:JSON.stringify({idResponsable:String(resp),accepter:String(accepter)})});
+    showResult(res,`<strong>${accepter?'✅ Acceptée':'❌ Refusée'}</strong>Demande #${d.numeroDemande} — ${d.statut}`,accepter?'success':'warning');
+    showToast(`Demande ${accepter?'acceptée':'refusée'}`);
+    chargerDemandes(); chargerDemandesAcceptees(); chargerStats();
+  } catch(e){showResult(res,`<strong>❌ Erreur</strong>${e.message}`,'error');}
+  finally{setBtnLoading(btnId,false,accepter?'✅ Accepter':'❌ Refuser');}
+}
+
+async function chargerDemandesAcceptees() {
+  const c=document.getElementById('list_dem_acceptees');
+  try {
+    const demandes=await getDemandes();
+    const acc=demandes.filter(d=>d.statut==='Acceptee'&&!d.inscription);
+    document.getElementById('cnt_acc').textContent=acc.length;
+    if(!acc.length){c.innerHTML=`<div class="resp-empty"><div class="e-icon">📋</div>Aucune demande acceptée sans inscription</div>`;return;}
+    c.innerHTML=acc.map(d=>`<div class="ins-dem-card" onclick="selectDemandeIns(${d.numeroDemande},this)"><div class="ins-dem-header"><div class="ins-dem-name">${d.employe?d.employe.nom:'—'} <span style="font-weight:400;color:#9ca3af;font-size:0.82rem;">— #${d.employe?d.employe.numeroEmploye:'?'}</span></div><span class="ins-dem-badge">Acceptée</span></div><div class="ins-dem-sub">📚 ${d.formation?d.formation.nomFormation:'—'} &nbsp;•&nbsp; 📅 ${d.dateDemande}</div></div>`).join('');
+  } catch(e){c.innerHTML=`<div class="resp-empty"><div class="e-icon">⚠️</div>Erreur</div>`;}
+}
+
+function selectDemandeIns(id,card){document.querySelectorAll('.ins-dem-card').forEach(c=>c.classList.remove('selected'));card.classList.add('selected');document.getElementById('ins_dem').value=id;}
+
+async function chargerSessionsInscrire() {
+  document.getElementById('ins_date').valueAsDate=new Date();
+  try {
+    const sessions=await getSessions();
+    const sel=document.getElementById('ins_ses');
+    sel.innerHTML=`<option value="">Sélectionner une session...</option>`+sessions.map(s=>`<option value="${s.idSession}">Session #${s.idSession} — ${s.date} (${s.prix.toLocaleString()} FCFA)</option>`).join('');
+  } catch(_){}
+}
+
+async function inscrire() {
+  const dem=document.getElementById('ins_dem').value,ses=document.getElementById('ins_ses').value,date=document.getElementById('ins_date').value,res=document.getElementById('res_ins');
+  if(!dem||!ses||!date){showResult(res,'<strong>⚠️ Sélectionnez une demande et une session</strong>','error');return;}
+  setBtnLoading('btnInscrire',true);
+  try {
+    const ins=await apiFetch('/inscriptions',{method:'POST',body:JSON.stringify({idDemande:String(dem),idSession:String(ses),dateInscription:date})});
+    showResult(res,`<strong>✅ Inscription #${ins.idInscription} créée !</strong>Statut : ${ins.statut}`,'success');
+    showToast('Inscription créée !');
+    document.getElementById('ins_dem').value='';
+    chargerDemandesAcceptees(); chargerStats();
+  } catch(e){showResult(res,`<strong>❌ Erreur</strong>${e.message}`,'error');}
+  finally{setBtnLoading('btnInscrire',false,"Valider l'inscription →");}
+}
+
+async function annuler() {
+  const demId=document.getElementById('ann_dem').value,res=document.getElementById('res_ann');
+  if(!demId){showResult(res,'<strong>⚠️ Entrez le N° de demande</strong>','error');return;}
+  setBtnLoading('btnAnnuler',true);
+  try {
+    const insId=await resolveInscriptionId(demId);
+    const ins=await apiFetch(`/inscriptions/${insId}/annuler`,{method:'PUT'});
+    showResult(res,`<strong>🚫 Annulée</strong>Inscription #${ins.idInscription} — ${ins.statut}`,'warning');
+    showToast('Inscription annulée'); chargerDemandesAcceptees();
+  } catch(e){showResult(res,`<strong>❌ Erreur</strong>${e.message}`,'error');}
+  finally{setBtnLoading('btnAnnuler',false,"🚫 Annuler l'inscription");}
+}
+
+async function cloturer() {
+  const demId=document.getElementById('clo_dem').value,app=document.getElementById('clo_app').value,doc=document.getElementById('clo_doc').value,res=document.getElementById('res_clo');
+  if(!demId||!app||!doc){showResult(res,"<strong>⚠️ Remplis tous les champs et joignez l'attestation</strong>",'error');return;}
+  setBtnLoading('btnCloturer',true);
+  try {
+    const insId=await resolveInscriptionId(demId);
+    const ins=await apiFetch(`/inscriptions/${insId}/cloturer`,{method:'PUT',body:JSON.stringify({appreciation:app,document:doc})});
+    showResult(res,`<strong>🎓 Clôturée !</strong>Inscription #${ins.idInscription} — ${ins.statut}`,'success');
+    showToast('Formation clôturée !');
+  } catch(e){showResult(res,`<strong>❌ Erreur</strong>${e.message}`,'error');}
+  finally{setBtnLoading('btnCloturer',false,'🎓 Clôturer la formation');}
+}
+
+async function chargerListeFormations(){const c=document.getElementById('list_formations_resp');try{const data=await getFormations();document.getElementById('cnt_for').textContent=data.length;c.innerHTML=data.map(f=>`<div class="resp-item"><div><div class="resp-item-title">${f.nomFormation}</div><div class="resp-item-sub">${f.contenuTexte||''}</div></div><span style="font-size:0.75rem;color:#9ca3af;font-family:'Syne',sans-serif;">#${f.numeroFormation}</span></div>`).join('')||`<div class="resp-empty"><div class="e-icon">📚</div>Vide</div>`;}catch(e){c.innerHTML=`<div class="resp-empty"><div class="e-icon">⚠️</div>Erreur</div>`;}}
+
+async function chargerListeSessions(){const c=document.getElementById('list_sessions_resp');try{const data=await getSessions();document.getElementById('cnt_ses').textContent=data.length;c.innerHTML=data.map(s=>`<div class="resp-item"><div><div class="resp-item-title">Session #${s.idSession}</div><div class="resp-item-sub">${s.date}</div></div><span style="font-family:'Syne',sans-serif;font-weight:700;color:#e8c547;">${s.prix.toLocaleString()} FCFA</span></div>`).join('')||`<div class="resp-empty"><div class="e-icon">📅</div>Vide</div>`;}catch(e){c.innerHTML=`<div class="resp-empty"><div class="e-icon">⚠️</div>Erreur</div>`;}}
+
+async function chargerListeEmployes(){const c=document.getElementById('list_employes_resp');try{const data=await getEmployes();document.getElementById('cnt_emp').textContent=data.length;c.innerHTML=data.map(e=>`<div class="resp-item"><div><div class="resp-item-title">${e.nom}</div><div class="resp-item-sub">${e.adresse}</div></div><span style="font-size:0.75rem;color:#9ca3af;font-family:'Syne',sans-serif;">#${e.numeroEmploye}</span></div>`).join('')||`<div class="resp-empty"><div class="e-icon">👤</div>Vide</div>`;}catch(e){c.innerHTML=`<div class="resp-empty"><div class="e-icon">⚠️</div>Erreur</div>`;}}
+
+async function ajouterFormation(){const id=document.getElementById('for_id').value,nom=document.getElementById('for_nom').value,ct=document.getElementById('for_contenu').value,res=document.getElementById('res_for');if(!id||!nom||!ct){showResult(res,'<strong>⚠️ Remplis tous les champs</strong>','error');return;}setBtnLoading('btnAjouterFormation',true);try{await apiFetch('/formations',{method:'POST',body:JSON.stringify({numeroFormation:parseInt(id),nomFormation:nom,contenuTexte:ct})});showResult(res,`<strong>✅ "${nom}" ajoutée !</strong>`,'success');showToast('Formation ajoutée');['for_id','for_nom','for_contenu'].forEach(i=>document.getElementById(i).value='');chargerListeFormations();chargerStats();}catch(e){showResult(res,`<strong>❌</strong>${e.message}`,'error');}finally{setBtnLoading('btnAjouterFormation',false,'+ Ajouter au catalogue');}}
+
+async function ajouterSession(){const id=document.getElementById('ses_id').value,date=document.getElementById('ses_date').value,prix=document.getElementById('ses_prix').value,res=document.getElementById('res_ses');if(!id||!date||!prix){showResult(res,'<strong>⚠️ Remplis tous les champs</strong>','error');return;}setBtnLoading('btnAjouterSession',true);try{await apiFetch('/sessions',{method:'POST',body:JSON.stringify({idSession:parseInt(id),date,prix:parseFloat(prix)})});showResult(res,`<strong>✅ Session ajoutée !</strong>`,'success');showToast('Session ajoutée');['ses_id','ses_date','ses_prix'].forEach(i=>document.getElementById(i).value='');chargerListeSessions();chargerStats();}catch(e){showResult(res,`<strong>❌</strong>${e.message}`,'error');}finally{setBtnLoading('btnAjouterSession',false,'+ Ajouter la session');}}
+
+async function ajouterEmploye(){const id=document.getElementById('emp_id').value,nom=document.getElementById('emp_nom').value,adr=document.getElementById('emp_adr').value,res=document.getElementById('res_emp');if(!id||!nom||!adr){showResult(res,'<strong>⚠️ Remplis les champs</strong>','error');return;}setBtnLoading('btnAjouterEmploye',true);try{await apiFetch('/employes',{method:'POST',body:JSON.stringify({numeroEmploye:parseInt(id),nom,adresse:adr})});showResult(res,`<strong>✅ "${nom}" ajouté !</strong>`,'success');showToast(`${nom} ajouté`);['emp_id','emp_nom','emp_adr'].forEach(i=>document.getElementById(i).value='');chargerListeEmployes();chargerStats();}catch(e){showResult(res,`<strong>❌</strong>${e.message}`,'error');}finally{setBtnLoading('btnAjouterEmploye',false,"+ Ajouter l'employé");}}
+
+async function ajouterResponsable(){const id=document.getElementById('resp_id').value,nom=document.getElementById('resp_nom').value,adr=document.getElementById('resp_adr').value,date=document.getElementById('resp_date').value,res=document.getElementById('res_emp');if(!id||!nom||!adr||!date){showResult(res,'<strong>⚠️ Remplis les champs</strong>','error');return;}setBtnLoading('btnAjouterResponsable',true);try{await apiFetch('/responsables',{method:'POST',body:JSON.stringify({numeroEmploye:parseInt(id),nom,adresse:adr,dateNomination:date})});showResult(res,`<strong>✅ "${nom}" ajouté !</strong>`,'success');showToast('Responsable ajouté');}catch(e){showResult(res,`<strong>❌</strong>${e.message}`,'error');}finally{setBtnLoading('btnAjouterResponsable',false,'+ Ajouter le responsable');}}
+
+/* ── FILE INPUT ── */
+function onFileChange(inputId,fakeId,hiddenId){const file=document.getElementById(inputId).files[0];const fake=document.getElementById(fakeId);const hidden=document.getElementById(hiddenId);if(file){fake.classList.add('has-file');fake.innerHTML=`<span class="fi-icon">✅</span><span class="fi-text">${file.name}</span>`;hidden.value=file.name;}else{fake.classList.remove('has-file');fake.innerHTML=`<span class="fi-icon">📎</span><span class="fi-text">Cliquer pour joindre un PDF…</span>`;hidden.value='';}}
+
+/* ── UTILS ── */
+function showResult(el,html,type){el.innerHTML=html;el.className='resp-result '+type;}
+function setBtnLoading(id,loading,label){const btn=document.getElementById(id);if(!btn)return;btn.disabled=loading;btn.innerHTML=loading?'<span class="spin-btn"></span>':label;}
+function showToast(msg){const el=document.createElement('div');el.className='toast-msg';el.textContent=msg;document.getElementById('toastContainer').appendChild(el);setTimeout(()=>el.remove(),3200);}
+
+/* ── INIT ── */
+chargerStats();
+</script>
+</body>
+</html>

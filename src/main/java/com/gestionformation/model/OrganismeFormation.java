@@ -18,8 +18,12 @@ public class OrganismeFormation {
     @Column(nullable = false)
     private String adresse;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "organisme_id")
+    // BUG CORRIGÉ #1 : l'ancienne version utilisait @OneToMany + @JoinColumn(name="organisme_id")
+    // ce qui créait une colonne FK dans la table "formations" EN PLUS de la table de jointure
+    // "formation_organisme" définie dans Formation.java → mapping contradictoire et corruption
+    // des données. La correction utilise mappedBy="organismes" pour indiquer que Formation
+    // est le côté propriétaire (owner) de la relation ManyToMany.
+    @ManyToMany(mappedBy = "organismes", fetch = FetchType.LAZY)
     private List<Formation> formations = new ArrayList<>();
 
     public OrganismeFormation() {}

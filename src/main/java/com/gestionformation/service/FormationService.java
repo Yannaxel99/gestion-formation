@@ -41,13 +41,17 @@ public class FormationService {
     }
 
     public DemandeFormation soumettreDemandeFormation(int idEmploye, int idFormation, String dateDemande) {
-        employeRepo.findById(idEmploye)
+        // BUG CORRIGÉ #2 : l'employé était chargé mais jamais lié à la demande.
+        // On le récupère maintenant et on l'associe via demande.setEmploye(employe).
+        Employe employe = employeRepo.findById(idEmploye)
                 .orElseThrow(() -> new RuntimeException("Employe introuvable : " + idEmploye));
         Formation formation = formationRepo.findById(idFormation)
                 .orElseThrow(() -> new RuntimeException("Formation introuvable : " + idFormation));
+
         DemandeFormation demande = new DemandeFormation();
         demande.setDateDemande(dateDemande);
         demande.setStatut("En attente");
+        demande.setEmploye(employe);   // ← lien Employe → Demande maintenant établi
         demande.setFormation(formation);
         return demandeRepo.save(demande);
     }

@@ -19,6 +19,14 @@ public class DemandeFormation {
     @Column(nullable = false)
     private String statut;
 
+    // BUG CORRIGÉ #2 : la relation "Faire (Employe → Demande_Formation)" du diagramme
+    // de classes UML était totalement absente du modèle. L'employé était chargé dans
+    // le service uniquement pour vérifier son existence, mais jamais rattaché à la demande.
+    // Ce champ ajoute la colonne employe_id en base et crée le lien correct.
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "employe_id", nullable = false)
+    private Employe employe;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "formation_id")
     private Formation formation;
@@ -59,6 +67,8 @@ public class DemandeFormation {
     public void setDateDemande(String dateDemande) { this.dateDemande = dateDemande; }
     public String getStatut() { return statut; }
     public void setStatut(String statut) { this.statut = statut; }
+    public Employe getEmploye() { return employe; }
+    public void setEmploye(Employe employe) { this.employe = employe; }
     public Formation getFormation() { return formation; }
     public void setFormation(Formation formation) { this.formation = formation; }
     public Inscription getInscription() { return inscription; }
