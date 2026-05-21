@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="style.css"/>
   <script src="https://kit.fontawesome.com/104203f7d5.js" crossorigin="anonymous"></script>
 </head>
-<body>
+<body>-
 
 <!-- ══════════════════════════════════════════
      HERO (toujours visible)
@@ -43,7 +43,6 @@
     <div class="hero-stat"><span class="hero-stat-value" id="statDemandes">—</span><span class="hero-stat-label">Demandes</span></div>
   </div>
 
-  <!-- NAV : Dashboard | Catalogue | Connexion  →  après login : + Mon espace -->
   <div class="hero-nav" id="hero-nav">
     <button class="hero-nav-btn active" onclick="switchView('dashboard')">
       <i class="bi bi-speedometer2 me-1"></i>Dashboard
@@ -54,7 +53,6 @@
     <button class="hero-nav-btn" id="nav-connexion" onclick="switchView('connexion')">
       <i class="bi bi-person-lock me-1"></i>Connexion<span class="nav-login-dot" id="login-dot"></span>
     </button>
-    <!-- tab "Mon espace" injecté dynamiquement après login -->
   </div>
 </div>
 
@@ -72,7 +70,11 @@
           <div class="card-icon" style="background:#eff6ff;color:#3b82f6;"><i class="bi bi-book-fill"></i></div>
           <div class="card-title-text">Catalogue des formations</div>
           <div class="card-desc">Consultez toutes les formations disponibles proposées par les organismes agréés.</div>
-          <div class="card-actions"><button class="btn-card" style="background:#3b82f6;color:white;" onclick="switchView('catalogue')"><i class="bi bi-list-ul"></i> Voir le catalogue</button></div>
+          <div class="card-actions">
+            <button class="btn-card" style="background:#3b82f6;color:white;" onclick="switchView('catalogue')">
+              <i class="bi bi-list-ul"></i> Voir le catalogue
+            </button>
+          </div>
         </div>
       </div>
       <div class="col-12 col-md-6 col-lg-4 anim anim-2">
@@ -80,7 +82,11 @@
           <div class="card-icon" style="background:#fefce8;color:#ca8a04;"><i class="bi bi-person-fill"></i></div>
           <div class="card-title-text">Espace Employé</div>
           <div class="card-desc">Soumettez une demande de formation, gérez vos inscriptions et clôturez vos formations.</div>
-          <div class="card-actions"><button class="btn-card" style="background:#e8c547;color:#1a1d2e;" onclick="switchView('connexion');selRole('employe')"><i class="bi bi-arrow-right-circle"></i> Accéder</button></div>
+          <div class="card-actions">
+            <button class="btn-card" style="background:#e8c547;color:#1a1d2e;" onclick="switchView('connexion');selRole('employe')">
+              <i class="bi bi-arrow-right-circle"></i> Accéder
+            </button>
+          </div>
         </div>
       </div>
       <div class="col-12 col-md-6 col-lg-4 anim anim-3">
@@ -88,12 +94,15 @@
           <div class="card-icon" style="background:#f5f3ff;color:#8b5cf6;"><i class="bi bi-person-badge-fill"></i></div>
           <div class="card-title-text">Espace Responsable</div>
           <div class="card-desc">Instruisez les demandes, inscrivez les employés aux sessions et gérez le catalogue.</div>
-          <div class="card-actions"><button class="btn-card" style="background:#8b5cf6;color:white;" onclick="switchView('connexion');selRole('responsable')"><i class="bi bi-arrow-right-circle"></i> Accéder</button></div>
+          <div class="card-actions">
+            <button class="btn-card" style="background:#8b5cf6;color:white;" onclick="switchView('connexion');selRole('responsable')">
+              <i class="bi bi-arrow-right-circle"></i> Accéder
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Guide du processus -->
     <div class="section-title anim anim-4">Comment ça marche ?</div>
     <div class="row g-3">
       <div class="col-12 col-md-6 col-lg-3 anim anim-4">
@@ -143,7 +152,6 @@
     <div class="section-title mb-3">Connexion à votre espace</div>
     <div class="connexion-wrap">
 
-      <!-- Formulaire de login -->
       <div class="login-card">
         <div class="login-section-title"><i class="bi bi-person-lock" style="color:#e8c547;"></i> Identifiez-vous</div>
 
@@ -162,7 +170,9 @@
 
         <div class="resp-form-group">
           <label class="resp-label">Numéro d'employé</label>
-          <input class="resp-input" type="number" id="li-num" placeholder="Entrez votre numéro (3 chiffres)" min="100" max="999" onkeydown="if(event.key==='Enter')doLogin()"/>
+          <input class="resp-input" type="number" id="li-num"
+                 placeholder="Entrez votre numéro (3 chiffres)" min="100" max="999"
+                 onkeydown="if(event.key==='Enter') doLogin()"/>
           <div class="resp-hint">Votre numéro unique à 3 chiffres</div>
         </div>
 
@@ -172,9 +182,7 @@
         <div class="login-error" id="login-err"></div>
       </div>
 
-      <!-- Ce qui attend l'utilisateur après connexion -->
       <div id="connexion-right">
-        <!-- Rempli dynamiquement : locked si pas connecté, contenu si connecté -->
         <div class="space-card space-card-locked">
           <div class="locked-placeholder">
             <span class="locked-icon"><i class="fa-solid fa-lock"></i></span>
@@ -229,6 +237,7 @@
     <div class="resp-panel" id="etab-inscription">
       <div class="resp-grid">
         <div style="display:flex;flex-direction:column;gap:1.2rem;">
+
           <!-- Empêchement -->
           <div class="resp-form-card">
             <div class="resp-form-title"><i class="fa-solid fa-ban"></i> Signaler un empêchement</div>
@@ -243,6 +252,7 @@
             <button class="resp-btn resp-btn-danger" id="btnEmpAnnuler" onclick="empAnnuler()">🚫 Signaler l'empêchement</button>
             <div class="resp-result" id="res_e_ann"></div>
           </div>
+
           <!-- Clôturer -->
           <div class="resp-form-card">
             <div class="resp-form-title"><i class="fa-solid fa-graduation-cap"></i> Clôturer ma formation</div>
@@ -257,23 +267,48 @@
             <div class="resp-form-group">
               <label class="resp-label">Attestation de présence (PDF)</label>
               <div class="file-input-wrap">
-                <input type="file" id="e_clo_file" accept=".pdf,application/pdf" onchange="onFileChange('e_clo_file','e_clo_fake','e_clo_doc')"/>
-                <div class="file-input-fake" id="e_clo_fake"><span class="fi-icon"><i class="fa-solid fa-paperclip"></i></span><span class="fi-text">Cliquer pour joindre un PDF…</span></div>
+                <input type="file" id="e_clo_file" accept=".pdf,application/pdf"
+                       onchange="onFileChange('e_clo_file','e_clo_fake','e_clo_doc')"/>
+                <div class="file-input-fake" id="e_clo_fake">
+                  <span class="fi-icon"><i class="fa-solid fa-paperclip"></i></span>
+                  <span class="fi-text">Cliquer pour joindre un PDF…</span>
+                </div>
               </div>
               <input type="hidden" id="e_clo_doc"/>
             </div>
-            <button class="resp-btn resp-btn-success" id="btnEmpCloturer" onclick="empCloturer()"><i class="fa-solid fa-graduation-cap"></i> Transmettre et clôturer</button>
+            <button class="resp-btn resp-btn-success" id="btnEmpCloturer" onclick="empCloturer()">
+              <i class="fa-solid fa-graduation-cap"></i> Transmettre et clôturer
+            </button>
             <div class="resp-result" id="res_e_clo"></div>
           </div>
+
         </div>
         <div style="display:flex;flex-direction:column;gap:1.2rem;">
+
+          <!-- Historique des demandes -->
+          <div class="resp-form-card" style="border-top:3px solid #8b5cf6;">
+            <div class="resp-form-title" style="color:#5b21b6;">
+              <i class="fa-solid fa-clock-rotate-left"></i> Historique de mes demandes
+            </div>
+            <div id="historique_demandes">
+              <div class="resp-empty" style="padding:1.5rem;">
+                <div class="e-icon" style="font-size:1.4rem;">⏳</div>Chargement...
+              </div>
+            </div>
+          </div>
+
+          <!-- Info boxes -->
           <div class="info-box">
-            <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.6rem;color:#065f46;"><i class="fa-solid fa-file"></i> Documents requis à la clôture</div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.6rem;color:#065f46;">
+              <i class="fa-solid fa-file"></i> Documents requis à la clôture
+            </div>
             <i class="fa-solid fa-circle-check"></i> Une <strong>appréciation</strong> sur la formation suivie<br/>
             <i class="fa-solid fa-circle-check"></i> Une <strong>attestation PDF</strong> prouvant votre présence
           </div>
           <div class="info-box-warn">
-            <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.6rem;color:#9a3412;"><i class="fa-solid fa-triangle-exclamation"></i> En cas d'empêchement</div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.6rem;color:#9a3412;">
+              <i class="fa-solid fa-triangle-exclamation"></i> En cas d'empêchement
+            </div>
             Signalez-vous <strong>immédiatement</strong> avec votre <strong>N° de demande</strong> pour que le responsable puisse annuler votre inscription.
           </div>
         </div>
@@ -285,13 +320,13 @@
   <div class="view-panel" id="view-responsable">
     <div class="section-title mb-3">Mon espace — Responsable de formation</div>
     <div class="sub-tabs" id="respTabs">
-      <button class="sub-tab-btn active" onclick="switchRespTab('demandes',this)"><i class="fa-solid fa-file-lines"></i>Demandes</button>
-      <button class="sub-tab-btn" onclick="switchRespTab('inscrire',this)"><i class="fa-solid fa-square-check"></i>Inscrire</button>
-      <button class="sub-tab-btn" onclick="switchRespTab('annuler',this)"><i class="fa-solid fa-trash-can"></i>Annuler</button>
-      <button class="sub-tab-btn" onclick="switchRespTab('cloturer',this)"><i class="fa-solid fa-graduation-cap"></i>Clôturer</button>
-      <button class="sub-tab-btn" onclick="switchRespTab('catalogue-resp',this)"><i class="fa-solid fa-book"></i>Catalogue</button>
-      <button class="sub-tab-btn" onclick="switchRespTab('sessions-resp',this)"><i class="fa-solid fa-calendar-days"></i>Sessions</button>
-      <button class="sub-tab-btn" onclick="switchRespTab('employes-resp',this)"><i class="fa-solid fa-users"></i>Employés</button>
+      <button class="sub-tab-btn active" onclick="switchRespTab('demandes',this)"><i class="fa-solid fa-file-lines"></i> Demandes</button>
+      <button class="sub-tab-btn" onclick="switchRespTab('inscrire',this)"><i class="fa-solid fa-square-check"></i> Inscrire</button>
+      <button class="sub-tab-btn" onclick="switchRespTab('annuler',this)"><i class="fa-solid fa-trash-can"></i> Annuler</button>
+      <button class="sub-tab-btn" onclick="switchRespTab('cloturer',this)"><i class="fa-solid fa-graduation-cap"></i> Clôturer</button>
+      <button class="sub-tab-btn" onclick="switchRespTab('catalogue-resp',this)"><i class="fa-solid fa-book"></i> Catalogue</button>
+      <button class="sub-tab-btn" onclick="switchRespTab('sessions-resp',this)"><i class="fa-solid fa-calendar-days"></i> Sessions</button>
+      <button class="sub-tab-btn" onclick="switchRespTab('employes-resp',this)"><i class="fa-solid fa-users"></i> Employés</button>
     </div>
 
     <!-- Demandes -->
@@ -330,7 +365,8 @@
           <div class="resp-form-title"><i class="fa-solid fa-pen"></i> Inscrire un employé</div>
           <div class="resp-form-group">
             <label class="resp-label">Demande sélectionnée</label>
-            <input class="resp-input" type="number" id="ins_dem" placeholder="← Cliquer sur une demande" readonly style="background:#f3f4f6;color:#6b7280;"/>
+            <input class="resp-input" type="number" id="ins_dem" placeholder="← Cliquer sur une demande"
+                   readonly style="background:#f3f4f6;color:#6b7280;"/>
             <div class="resp-hint">Cliquez sur une demande acceptée à droite</div>
           </div>
           <div class="resp-form-group">
@@ -359,7 +395,9 @@
       <div class="resp-grid">
         <div class="resp-form-card">
           <div class="resp-form-title"><i class="fa-solid fa-ban"></i> Annuler une inscription</div>
-          <div style="font-size:0.82rem;background:rgba(234,179,8,0.08);border-radius:8px;color:#92400e;padding:.6rem .9rem;margin-bottom:1rem;"><i class="bi bi-exclamation-triangle me-1"></i>L'annulation est <strong>irréversible</strong>.</div>
+          <div style="font-size:0.82rem;background:rgba(234,179,8,0.08);border-radius:8px;color:#92400e;padding:.6rem .9rem;margin-bottom:1rem;">
+            <i class="bi bi-exclamation-triangle me-1"></i>L'annulation est <strong>irréversible</strong>.
+          </div>
           <div class="resp-form-group">
             <label class="resp-label">N° de la demande</label>
             <input class="resp-input" type="number" id="ann_dem" placeholder="ex: 1"/>
@@ -370,7 +408,9 @@
         </div>
         <div class="resp-form-card" style="background:#fff8f8;border-color:rgba(239,68,68,0.2);">
           <div class="resp-form-title" style="color:#991b1b;"><i class="fa-solid fa-circle-info"></i> Conditions</div>
-          <p style="font-size:0.85rem;color:#6b7280;line-height:1.6;">L'employé doit signaler son empêchement <strong>au plus vite</strong>. Le responsable est chargé de demander l'annulation de l'inscription auprès de l'organisme.</p>
+          <p style="font-size:0.85rem;color:#6b7280;line-height:1.6;">
+            L'employé doit signaler son empêchement <strong>au plus vite</strong>. Le responsable est chargé de demander l'annulation de l'inscription auprès de l'organisme.
+          </p>
         </div>
       </div>
     </div>
@@ -380,28 +420,45 @@
       <div class="resp-grid">
         <div class="resp-form-card">
           <div class="resp-form-title"><i class="fa-solid fa-graduation-cap"></i> Clôturer une formation</div>
+
           <div class="resp-form-group">
             <label class="resp-label">N° de la demande</label>
-            <input class="resp-input" type="number" id="clo_dem" placeholder="ex: 1"/>
+            <input class="resp-input" type="number" id="clo_dem" placeholder="ex: 1"
+                   oninput="onCloDemandeChange()"/>
+            <div class="resp-hint">Les données de l'employé se chargent automatiquement</div>
+          </div>
+
+          <!-- Bandeau données reçues — rempli automatiquement -->
+          <div id="clo_preview" style="display:none;background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:0.9rem 1rem;margin-bottom:1rem;font-size:0.83rem;"></div>
+
+          <div class="resp-form-group">
+            <label class="resp-label">Appréciation <span style="font-size:0.7rem;color:#9ca3af;">(transmise par l'employé)</span></label>
+            <textarea class="resp-textarea" id="clo_app" placeholder="Se remplit automatiquement..." readonly
+                      style="background:#f9fafb;color:#6b7280;cursor:default;"></textarea>
           </div>
           <div class="resp-form-group">
-            <label class="resp-label">Appréciation</label>
-            <textarea class="resp-textarea" id="clo_app" placeholder="Retour de l'employé..."></textarea>
-          </div>
-          <div class="resp-form-group">
-            <label class="resp-label">Attestation / Document (PDF)</label>
+            <label class="resp-label">Attestation / Document <span style="font-size:0.7rem;color:#9ca3af;">(transmise par l'employé)</span></label>
             <div class="file-input-wrap">
-              <input type="file" id="clo_file" accept=".pdf,application/pdf" onchange="onFileChange('clo_file','clo_fake','clo_doc')"/>
-              <div class="file-input-fake" id="clo_fake"><span class="fi-icon"><i class="fa-solid fa-paperclip"></i></span><span class="fi-text">Cliquer pour joindre un PDF…</span></div>
+              <div class="file-input-fake" id="clo_fake" style="cursor:default;">
+                <span class="fi-icon"><i class="fa-solid fa-paperclip"></i></span>
+                <span class="fi-text">Se remplit automatiquement...</span>
+              </div>
             </div>
             <input type="hidden" id="clo_doc"/>
           </div>
-          <button class="resp-btn resp-btn-success" id="btnCloturer" onclick="cloturer()"><i class="fa-solid fa-graduation-cap"></i> Clôturer la formation</button>
+          <button class="resp-btn resp-btn-success" id="btnCloturer" onclick="cloturer()">
+            <i class="fa-solid fa-graduation-cap"></i> Clôturer la formation
+          </button>
           <div class="resp-result" id="res_clo"></div>
         </div>
         <div class="resp-form-card" style="background:#f0fdf4;border-color:rgba(16,185,129,0.2);">
-          <div class="resp-form-title" style="color:#065f46;"><i class="fa-solid fa-file"></i> Documents requis</div>
-          <p style="font-size:0.85rem;color:#6b7280;line-height:1.7;"><i class="fa-solid fa-circle-check"></i> Une <strong>appréciation</strong> sur la formation<br/><i class="fa-solid fa-circle-check"></i> Un <strong>document PDF</strong> de présence<br/><br/>Le responsable contrôle ensuite la <strong>facture</strong> de l'organisme.</p>
+          <div class="resp-form-title" style="color:#065f46;"><i class="fa-solid fa-circle-info"></i> Comment ça marche ?</div>
+          <p style="font-size:0.85rem;color:#6b7280;line-height:1.9;">
+            <i class="fa-solid fa-circle-check" style="color:#8b5cf6;"></i> L'employé transmet son appréciation et son attestation depuis <strong>Mes inscriptions</strong><br/>
+            <i class="fa-solid fa-circle-check" style="color:#8b5cf6;"></i> Entrez le <strong>N° de demande</strong> — les données apparaissent automatiquement<br/>
+            <i class="fa-solid fa-circle-check" style="color:#8b5cf6;"></i> Cliquez sur <strong>Clôturer</strong> pour valider<br/><br/>
+            <i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b;"></i> Si les données ne se chargent pas, l'employé n'a pas encore transmis.
+          </p>
         </div>
       </div>
     </div>
@@ -418,7 +475,10 @@
           <div class="resp-result" id="res_for"></div>
         </div>
         <div>
-          <div class="resp-list-header"><div class="resp-list-title">Catalogue <span class="resp-count" id="cnt_for">0</span></div><button class="resp-refresh" onclick="chargerListeFormations()">↻</button></div>
+          <div class="resp-list-header">
+            <div class="resp-list-title">Catalogue <span class="resp-count" id="cnt_for">0</span></div>
+            <button class="resp-refresh" onclick="chargerListeFormations()">↻</button>
+          </div>
           <div id="list_formations_resp"><div class="resp-empty"><div class="e-icon"><i class="fa-solid fa-book"></i></div>Chargement...</div></div>
         </div>
       </div>
@@ -436,7 +496,10 @@
           <div class="resp-result" id="res_ses"></div>
         </div>
         <div>
-          <div class="resp-list-header"><div class="resp-list-title">Sessions <span class="resp-count" id="cnt_ses">0</span></div><button class="resp-refresh" onclick="chargerListeSessions()">↻</button></div>
+          <div class="resp-list-header">
+            <div class="resp-list-title">Sessions <span class="resp-count" id="cnt_ses">0</span></div>
+            <button class="resp-refresh" onclick="chargerListeSessions()">↻</button>
+          </div>
           <div id="list_sessions_resp"><div class="resp-empty"><div class="e-icon"><i class="fa-solid fa-calendar"></i></div>Chargement...</div></div>
         </div>
       </div>
@@ -460,7 +523,10 @@
           <div class="resp-result" id="res_emp"></div>
         </div>
         <div>
-          <div class="resp-list-header"><div class="resp-list-title">Employés <span class="resp-count" id="cnt_emp">0</span></div><button class="resp-refresh" onclick="chargerListeEmployes()">↻</button></div>
+          <div class="resp-list-header">
+            <div class="resp-list-title">Employés <span class="resp-count" id="cnt_emp">0</span></div>
+            <button class="resp-refresh" onclick="chargerListeEmployes()">↻</button>
+          </div>
           <div id="list_employes_resp"><div class="resp-empty"><div class="e-icon"><i class="fa-solid fa-user"></i></div>Chargement...</div></div>
         </div>
       </div>
@@ -472,377 +538,11 @@
 
 <div class="toast-container-custom" id="toastContainer"></div>
 
+<!-- ══════════════════════════════════════════
+     SCRIPTS — Bootstrap d'abord, puis app.js
+══════════════════════════════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-const API = "http://localhost:8080/api";
-let currentUser = null;
-let currentRole = null;
+<script src="app.js"></script>
 
-/* ── API ── */
-async function apiFetch(path, opts={}) {
-  const r = await fetch(API+path, {headers:{"Content-Type":"application/json"},...opts});
-  if(!r.ok){const t=await r.text();throw new Error(t||r.statusText);}
-  return r.json();
-}
-const getFormations = () => apiFetch("/formations");
-const getSessions   = () => apiFetch("/sessions");
-const getEmployes   = () => apiFetch("/employes");
-const getDemandes   = () => apiFetch("/demandes");
-
-/* ── NAVIGATION ── */
-function switchView(name) {
-  document.querySelectorAll('.view-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.hero-nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('view-'+name).classList.add('active');
-
-  // active tab
-  const tabMap = {dashboard:0, catalogue:1, connexion:2, employe:3, responsable:3};
-  const btns = document.querySelectorAll('.hero-nav-btn');
-  if(btns[tabMap[name]]) btns[tabMap[name]].classList.add('active');
-
-  if(name==='catalogue')   chargerCatalogue();
-  if(name==='employe')     { chargerFormationsEmp(); document.getElementById('e_date_dem').valueAsDate=new Date(); }
-  if(name==='responsable') { chargerDemandes(); chargerDemandesAcceptees(); chargerSessionsInscrire(); }
-}
-
-/* ── LOGIN ── */
-let selectedRole = 'employe';
-
-function selRole(r) {
-  selectedRole = r;
-  document.getElementById('ro-employe').classList.toggle('selected', r==='employe');
-  document.getElementById('ro-responsable').classList.toggle('selected', r==='responsable');
-}
-
-async function doLogin() {
-  const num = parseInt(document.getElementById('li-num').value);
-  const errEl = document.getElementById('login-err');
-  const btn = document.getElementById('login-btn');
-  errEl.classList.remove('show');
-
-  if(!num||num<100||num>999){
-    errEl.textContent="Entrez un numéro valide (3 chiffres)."; errEl.classList.add('show'); return;
-  }
-  btn.disabled=true; btn.innerHTML='<span class="spin-btn" style="border-top-color:#1a1d2e;"></span>';
-
-  try {
-    const employes = await getEmployes();
-    const emp = employes.find(e=>e.numeroEmploye===num);
-    if(!emp){errEl.textContent=`Employé #${num} introuvable.`; errEl.classList.add('show'); btn.disabled=false; btn.innerHTML='Se connecter →'; return;}
-
-    const isResp = !!emp.dateNomination;
-    if(selectedRole==='responsable'&&!isResp){errEl.textContent=`#${num} est un employé, pas un responsable.`; errEl.classList.add('show'); btn.disabled=false; btn.innerHTML='Se connecter →'; return;}
-    if(selectedRole==='employe'&&isResp){errEl.textContent=`#${num} est un responsable. Choisissez le rôle Responsable.`; errEl.classList.add('show'); btn.disabled=false; btn.innerHTML='Se connecter →'; return;}
-
-    currentUser=emp; currentRole=selectedRole;
-    afterLogin();
-  } catch(e){errEl.textContent='Erreur serveur : '+e.message; errEl.classList.add('show'); btn.disabled=false; btn.innerHTML='Se connecter →';}
-}
-
-function afterLogin() {
-  const prenom = currentUser.nom.split(' ')[0];
-
-  // topbar pill
-  document.getElementById('app-avatar').textContent = prenom.substring(0,2).toUpperCase();
-  document.getElementById('app-username').textContent = currentUser.nom;
-  document.getElementById('app-role-label').textContent = currentRole==='responsable' ? 'Responsable' : 'Employé';
-  document.getElementById('user-pill').classList.add('show');
-  document.getElementById('logout-btn').style.display='flex';
-
-  // masquer le point sur "Connexion"
-  document.getElementById('login-dot').style.display='none';
-
-  // ajouter l'onglet "Mon espace" si absent
-  if(!document.getElementById('nav-monespace')){
-    const nav = document.getElementById('hero-nav');
-    const btn = document.createElement('button');
-    btn.className='hero-nav-btn'; btn.id='nav-monespace';
-    btn.innerHTML=`<i class="bi bi-${currentRole==='responsable'?'person-badge':'person'} me-1"></i>Mon espace`;
-    btn.onclick = () => switchView(currentRole==='responsable'?'responsable':'employe');
-    nav.appendChild(btn);
-  }
-
-  // afficher le résumé à droite dans le panel connexion
-  const right = document.getElementById('connexion-right');
-  const spaceView = currentRole==='responsable' ? 'responsable' : 'employe';
-  const icon = currentRole==='responsable' ?  '<i class="fa-duotone fa-thin fa-building"></i>' : '<i class="fa-duotone fa-thin fa-user"></i>';
-  const actions = currentRole==='responsable'
-    ? '<li>Instruire les demandes</li><li>Inscrire un employé à une session</li><li>Annuler / clôturer une formation</li><li>Gérer le catalogue &amp; les sessions</li>'
-    : '<li>Soumettre une demande de formation</li><li>Signaler un empêchement</li><li>Clôturer ma formation</li>';
-  right.innerHTML=`
-    <div class="space-card">
-      <div class="login-section-title" style="color:#065f46;">${icon} Connecté en tant que ${currentRole==='responsable'?'Responsable':'Employé'}</div>
-      <div style="margin-bottom:1rem;">
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;color:#1a1d2e;">${currentUser.nom}</div>
-        <div style="font-size:0.82rem;color:#9ca3af;">N° ${currentUser.numeroEmploye}</div>
-      </div>
-      <div style="font-size:0.85rem;color:#374151;margin-bottom:1.2rem;">
-        <strong style="font-family:'Syne',sans-serif;font-size:0.78rem;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:.5rem;">Vos fonctionnalités</strong>
-        <ul style="padding-left:1.2rem;margin:0;line-height:2;">${actions}</ul>
-      </div>
-      <button class="resp-btn resp-btn-primary" onclick="switchView('${spaceView}')">
-        <i class="bi bi-arrow-right-circle me-1"></i>Accéder à mon espace
-      </button>
-    </div>`;
-
-  // préremplir les champs auto
-  if(currentRole==='employe') {
-    document.getElementById('e_emp_id').value=currentUser.numeroEmploye;
-  } else {
-    document.getElementById('inst_resp').value=currentUser.numeroEmploye;
-  }
-
-  showToast(`Bienvenue, ${prenom} ! <i class="fa-solid fa-wave-hand"></i>`);
-
-  // reset btn
-  document.getElementById('login-btn').disabled=false;
-  document.getElementById('login-btn').innerHTML='Se connecter →';
-}
-
-function logout() {
-  currentUser=null; currentRole=null;
-  document.getElementById('user-pill').classList.remove('show');
-  document.getElementById('logout-btn').style.display='none';
-  document.getElementById('login-dot').style.display='';
-  document.getElementById('li-num').value='';
-  document.getElementById('login-err').classList.remove('show');
-  // remove "Mon espace" tab
-  const t = document.getElementById('nav-monespace');
-  if(t) t.remove();
-  // reset right panel
-  document.getElementById('connexion-right').innerHTML=`
-    <div class="space-card space-card-locked">
-      <div class="locked-placeholder">
-        <span class="locked-icon">🔒</span>
-        <div class="locked-title">Votre espace personnel</div>
-        <div class="locked-sub">Connectez-vous à gauche pour accéder à votre espace et à toutes les fonctionnalités associées à votre rôle.</div>
-      </div>
-    </div>`;
-  selRole('employe');
-  switchView('dashboard');
-}
-
-/* ── STATS ── */
-async function chargerStats() {
-  try {
-    const [f,s,e,d]=await Promise.all([getFormations(),getSessions(),getEmployes(),getDemandes()]);
-    document.getElementById('statFormations').textContent=f.length;
-    document.getElementById('statSessions').textContent=s.length;
-    document.getElementById('statEmployes').textContent=e.length;
-    document.getElementById('statDemandes').textContent=d.length;
-  } catch(_){}
-}
-
-/* ── CATALOGUE ── */
-async function chargerCatalogue() {
-  const grid=document.getElementById('catalogueGrid');
-  grid.innerHTML=`<div class="resp-empty"><div class="e-icon">📚</div>Chargement...</div>`;
-  try {
-    const data=await getFormations();
-    if(!data.length){grid.innerHTML=`<div class="resp-empty"><div class="e-icon">📭</div>Aucune formation</div>`;return;}
-    grid.innerHTML=data.map(f=>`
-      <div class="formation-card">
-        <div class="card-num">FORMATION #${f.numeroFormation}</div>
-        <div class="card-name">${f.nomFormation}</div>
-        <div class="card-desc-text">${f.contenuTexte||'Aucune description.'}</div>
-        <div class="card-footer-row">
-          <span class="card-badge-pill">Disponible</span>
-          ${currentRole==='employe'?`<button class="btn-demander" onclick="switchView('employe');switchEmpTab('demande');document.getElementById('e_formation').value='${f.numeroFormation}'">Demander →</button>`:''}
-        </div>
-      </div>`).join('');
-  } catch(e){grid.innerHTML=`<div class="resp-empty"><div class="e-icon">⚠️</div>Erreur de chargement</div>`;}
-}
-
-/* ── EMPLOYÉ ── */
-function switchEmpTab(name,btn) {
-  document.querySelectorAll('#etab-demande,#etab-inscription').forEach(p=>p.classList.remove('active'));
-  document.getElementById('etab-'+name).classList.add('active');
-  document.querySelectorAll('#empTabs .sub-tab-btn').forEach(b=>b.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  else document.querySelectorAll('#empTabs .sub-tab-btn')[{demande:0,inscription:1}[name]]?.classList.add('active');
-}
-
-async function chargerFormationsEmp() {
-  const c=document.getElementById('list_formations_emp');
-  const sel=document.getElementById('e_formation');
-  try {
-    const data=await getFormations();
-    document.getElementById('cnt_form_emp').textContent=data.length;
-    sel.innerHTML=`<option value="">Sélectionner...</option>`+data.map(f=>`<option value="${f.numeroFormation}">${f.nomFormation}</option>`).join('');
-    c.innerHTML=data.map(f=>`<div class="resp-item" onclick="document.getElementById('e_formation').value='${f.numeroFormation}'"><div><div class="resp-item-title">${f.nomFormation}</div><div class="resp-item-sub">${(f.contenuTexte||'').substring(0,80)}${f.contenuTexte&&f.contenuTexte.length>80?'…':''}</div></div><span style="font-size:0.75rem;color:#9ca3af;font-family:'Syne',sans-serif;">#${f.numeroFormation}</span></div>`).join('')||`<div class="resp-empty"><div class="e-icon">📭</div>Aucune formation</div>`;
-  } catch(e){c.innerHTML=`<div class="resp-empty"><div class="e-icon">⚠️</div>Erreur</div>`;}
-}
-
-async function soumettreDemandeEmp() {
-  const emp=document.getElementById('e_emp_id').value,form=document.getElementById('e_formation').value,date=document.getElementById('e_date_dem').value,res=document.getElementById('res_dem');
-  if(!form||!date){showResult(res,'<strong>⚠️ Sélectionnez une formation et une date</strong>','error');return;}
-  setBtnLoading('btnSoumettre',true);
-  try {
-    const d=await apiFetch('/demandes',{method:'POST',body:JSON.stringify({idEmploye:String(emp),idFormation:String(form),dateDemande:date})});
-    showResult(res,`<strong>✅ Demande #${d.numeroDemande} soumise !</strong>Statut : ${d.statut}`,'success');
-    showToast('Demande soumise !'); chargerStats();
-  } catch(e){showResult(res,`<strong>❌ Erreur</strong>${e.message}`,'error');}
-  finally{setBtnLoading('btnSoumettre',false,'Soumettre ma demande →');}
-}
-
-async function resolveInscriptionId(demandeId) {
-  const demandes=await getDemandes();
-  const dem=demandes.find(d=>d.numeroDemande==demandeId);
-  if(!dem) throw new Error(`Demande #${demandeId} introuvable.`);
-  if(!dem.inscription) throw new Error(`La demande #${demandeId} n'a pas encore d'inscription associée.`);
-  return dem.inscription.idInscription;
-}
-
-async function empAnnuler() {
-  const demId=document.getElementById('e_ann_dem').value,res=document.getElementById('res_e_ann');
-  if(!demId){showResult(res,'<strong>⚠️ Entrez votre N° de demande</strong>','error');return;}
-  setBtnLoading('btnEmpAnnuler',true);
-  try {
-    const insId=await resolveInscriptionId(demId);
-    const ins=await apiFetch(`/inscriptions/${insId}/annuler`,{method:'PUT'});
-    showResult(res,`<strong>🚫 Signalé</strong>Inscription #${ins.idInscription} — ${ins.statut}`,'warning');
-    showToast('Empêchement signalé');
-  } catch(e){showResult(res,`<strong>❌ Erreur</strong>${e.message}`,'error');}
-  finally{setBtnLoading('btnEmpAnnuler',false,"🚫 Signaler l'empêchement");}
-}
-
-async function empCloturer() {
-  const demId=document.getElementById('e_clo_dem').value,app=document.getElementById('e_clo_app').value,doc=document.getElementById('e_clo_doc').value,res=document.getElementById('res_e_clo');
-  if(!demId||!app||!doc){showResult(res,"<strong>⚠️ Remplis tous les champs et joignez l'attestation</strong>",'error');return;}
-  setBtnLoading('btnEmpCloturer',true);
-  try {
-    const insId=await resolveInscriptionId(demId);
-    const ins=await apiFetch(`/inscriptions/${insId}/cloturer`,{method:'PUT',body:JSON.stringify({appreciation:app,document:doc})});
-    showResult(res,`<strong>🎓 Clôturée !</strong>Inscription #${ins.idInscription} — ${ins.statut}`,'success');
-    showToast('Formation clôturée !');
-  } catch(e){showResult(res,`<strong>❌ Erreur</strong>${e.message}`,'error');}
-  finally{setBtnLoading('btnEmpCloturer',false,'🎓 Transmettre et clôturer');}
-}
-
-/* ── RESPONSABLE ── */
-function switchRespTab(name,btn) {
-  document.querySelectorAll('[id^="rtab-"]').forEach(p=>p.classList.remove('active'));
-  document.getElementById('rtab-'+name).classList.add('active');
-  document.querySelectorAll('#respTabs .sub-tab-btn').forEach(b=>b.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  else{const m={demandes:0,inscrire:1,annuler:2,cloturer:3,'catalogue-resp':4,'sessions-resp':5,'employes-resp':6};document.querySelectorAll('#respTabs .sub-tab-btn')[m[name]]?.classList.add('active');}
-  if(name==='catalogue-resp') chargerListeFormations();
-  if(name==='sessions-resp') chargerListeSessions();
-  if(name==='employes-resp') chargerListeEmployes();
-  if(name==='inscrire'){chargerDemandesAcceptees();chargerSessionsInscrire();}
-}
-
-async function chargerDemandes() {
-  const c=document.getElementById('list_demandes');
-  try {
-    const data=await getDemandes();
-    document.getElementById('cnt_dem').textContent=data.length;
-    if(!data.length){c.innerHTML=`<div class="resp-empty"><div class="e-icon">📋</div>Aucune demande</div>`;return;}
-    const sc={'en attente':'s-attente','acceptee':'s-acceptee','refusee':'s-refusee'};
-    c.innerHTML=data.map(d=>`<div class="resp-item" onclick="document.getElementById('inst_id').value='${d.numeroDemande}'"><div><div class="resp-item-title">Demande #${d.numeroDemande}</div><div class="resp-item-sub">${d.employe?d.employe.nom:'—'} • ${d.formation?d.formation.nomFormation:'—'} • ${d.dateDemande}</div></div><span class="resp-status ${sc[(d.statut||'').toLowerCase()]||''}">${d.statut}</span></div>`).join('');
-  } catch(e){c.innerHTML=`<div class="resp-empty"><div class="e-icon">⚠️</div>Erreur</div>`;}
-}
-
-async function instruire(accepter) {
-  const id=document.getElementById('inst_id').value,resp=document.getElementById('inst_resp').value,res=document.getElementById('res_inst');
-  if(!id){showResult(res,'<strong>⚠️ Sélectionnez une demande</strong>','error');return;}
-  const btnId=accepter?'btnAccepter':'btnRefuser';
-  setBtnLoading(btnId,true);
-  try {
-    const d=await apiFetch(`/demandes/${id}/instruire`,{method:'PUT',body:JSON.stringify({idResponsable:String(resp),accepter:String(accepter)})});
-    showResult(res,`<strong>${accepter?'✅ Acceptée':'❌ Refusée'}</strong>Demande #${d.numeroDemande} — ${d.statut}`,accepter?'success':'warning');
-    showToast(`Demande ${accepter?'acceptée':'refusée'}`);
-    chargerDemandes(); chargerDemandesAcceptees(); chargerStats();
-  } catch(e){showResult(res,`<strong>❌ Erreur</strong>${e.message}`,'error');}
-  finally{setBtnLoading(btnId,false,accepter?'✅ Accepter':'❌ Refuser');}
-}
-
-async function chargerDemandesAcceptees() {
-  const c=document.getElementById('list_dem_acceptees');
-  try {
-    const demandes=await getDemandes();
-    const acc=demandes.filter(d=>d.statut==='Acceptee'&&!d.inscription);
-    document.getElementById('cnt_acc').textContent=acc.length;
-    if(!acc.length){c.innerHTML=`<div class="resp-empty"><div class="e-icon">📋</div>Aucune demande acceptée sans inscription</div>`;return;}
-    c.innerHTML=acc.map(d=>`<div class="ins-dem-card" onclick="selectDemandeIns(${d.numeroDemande},this)"><div class="ins-dem-header"><div class="ins-dem-name">${d.employe?d.employe.nom:'—'} <span style="font-weight:400;color:#9ca3af;font-size:0.82rem;">— #${d.employe?d.employe.numeroEmploye:'?'}</span></div><span class="ins-dem-badge">Acceptée</span></div><div class="ins-dem-sub">📚 ${d.formation?d.formation.nomFormation:'—'} &nbsp;•&nbsp; 📅 ${d.dateDemande}</div></div>`).join('');
-  } catch(e){c.innerHTML=`<div class="resp-empty"><div class="e-icon">⚠️</div>Erreur</div>`;}
-}
-
-function selectDemandeIns(id,card){document.querySelectorAll('.ins-dem-card').forEach(c=>c.classList.remove('selected'));card.classList.add('selected');document.getElementById('ins_dem').value=id;}
-
-async function chargerSessionsInscrire() {
-  document.getElementById('ins_date').valueAsDate=new Date();
-  try {
-    const sessions=await getSessions();
-    const sel=document.getElementById('ins_ses');
-    sel.innerHTML=`<option value="">Sélectionner une session...</option>`+sessions.map(s=>`<option value="${s.idSession}">Session #${s.idSession} — ${s.date} (${s.prix.toLocaleString()} FCFA)</option>`).join('');
-  } catch(_){}
-}
-
-async function inscrire() {
-  const dem=document.getElementById('ins_dem').value,ses=document.getElementById('ins_ses').value,date=document.getElementById('ins_date').value,res=document.getElementById('res_ins');
-  if(!dem||!ses||!date){showResult(res,'<strong>⚠️ Sélectionnez une demande et une session</strong>','error');return;}
-  setBtnLoading('btnInscrire',true);
-  try {
-    const ins=await apiFetch('/inscriptions',{method:'POST',body:JSON.stringify({idDemande:String(dem),idSession:String(ses),dateInscription:date})});
-    showResult(res,`<strong>✅ Inscription #${ins.idInscription} créée !</strong>Statut : ${ins.statut}`,'success');
-    showToast('Inscription créée !');
-    document.getElementById('ins_dem').value='';
-    chargerDemandesAcceptees(); chargerStats();
-  } catch(e){showResult(res,`<strong>❌ Erreur</strong>${e.message}`,'error');}
-  finally{setBtnLoading('btnInscrire',false,"Valider l'inscription →");}
-}
-
-async function annuler() {
-  const demId=document.getElementById('ann_dem').value,res=document.getElementById('res_ann');
-  if(!demId){showResult(res,'<strong>⚠️ Entrez le N° de demande</strong>','error');return;}
-  setBtnLoading('btnAnnuler',true);
-  try {
-    const insId=await resolveInscriptionId(demId);
-    const ins=await apiFetch(`/inscriptions/${insId}/annuler`,{method:'PUT'});
-    showResult(res,`<strong>🚫 Annulée</strong>Inscription #${ins.idInscription} — ${ins.statut}`,'warning');
-    showToast('Inscription annulée'); chargerDemandesAcceptees();
-  } catch(e){showResult(res,`<strong>❌ Erreur</strong>${e.message}`,'error');}
-  finally{setBtnLoading('btnAnnuler',false,"🚫 Annuler l'inscription");}
-}
-
-async function cloturer() {
-  const demId=document.getElementById('clo_dem').value,app=document.getElementById('clo_app').value,doc=document.getElementById('clo_doc').value,res=document.getElementById('res_clo');
-  if(!demId||!app||!doc){showResult(res,"<strong>⚠️ Remplis tous les champs et joignez l'attestation</strong>",'error');return;}
-  setBtnLoading('btnCloturer',true);
-  try {
-    const insId=await resolveInscriptionId(demId);
-    const ins=await apiFetch(`/inscriptions/${insId}/cloturer`,{method:'PUT',body:JSON.stringify({appreciation:app,document:doc})});
-    showResult(res,`<strong>🎓 Clôturée !</strong>Inscription #${ins.idInscription} — ${ins.statut}`,'success');
-    showToast('Formation clôturée !');
-  } catch(e){showResult(res,`<strong>❌ Erreur</strong>${e.message}`,'error');}
-  finally{setBtnLoading('btnCloturer',false,'🎓 Clôturer la formation');}
-}
-
-async function chargerListeFormations(){const c=document.getElementById('list_formations_resp');try{const data=await getFormations();document.getElementById('cnt_for').textContent=data.length;c.innerHTML=data.map(f=>`<div class="resp-item"><div><div class="resp-item-title">${f.nomFormation}</div><div class="resp-item-sub">${f.contenuTexte||''}</div></div><span style="font-size:0.75rem;color:#9ca3af;font-family:'Syne',sans-serif;">#${f.numeroFormation}</span></div>`).join('')||`<div class="resp-empty"><div class="e-icon">📚</div>Vide</div>`;}catch(e){c.innerHTML=`<div class="resp-empty"><div class="e-icon">⚠️</div>Erreur</div>`;}}
-
-async function chargerListeSessions(){const c=document.getElementById('list_sessions_resp');try{const data=await getSessions();document.getElementById('cnt_ses').textContent=data.length;c.innerHTML=data.map(s=>`<div class="resp-item"><div><div class="resp-item-title">Session #${s.idSession}</div><div class="resp-item-sub">${s.date}</div></div><span style="font-family:'Syne',sans-serif;font-weight:700;color:#e8c547;">${s.prix.toLocaleString()} FCFA</span></div>`).join('')||`<div class="resp-empty"><div class="e-icon">📅</div>Vide</div>`;}catch(e){c.innerHTML=`<div class="resp-empty"><div class="e-icon">⚠️</div>Erreur</div>`;}}
-
-async function chargerListeEmployes(){const c=document.getElementById('list_employes_resp');try{const data=await getEmployes();document.getElementById('cnt_emp').textContent=data.length;c.innerHTML=data.map(e=>`<div class="resp-item"><div><div class="resp-item-title">${e.nom}</div><div class="resp-item-sub">${e.adresse}</div></div><span style="font-size:0.75rem;color:#9ca3af;font-family:'Syne',sans-serif;">#${e.numeroEmploye}</span></div>`).join('')||`<div class="resp-empty"><div class="e-icon">👤</div>Vide</div>`;}catch(e){c.innerHTML=`<div class="resp-empty"><div class="e-icon">⚠️</div>Erreur</div>`;}}
-
-async function ajouterFormation(){const id=document.getElementById('for_id').value,nom=document.getElementById('for_nom').value,ct=document.getElementById('for_contenu').value,res=document.getElementById('res_for');if(!id||!nom||!ct){showResult(res,'<strong>⚠️ Remplis tous les champs</strong>','error');return;}setBtnLoading('btnAjouterFormation',true);try{await apiFetch('/formations',{method:'POST',body:JSON.stringify({numeroFormation:parseInt(id),nomFormation:nom,contenuTexte:ct})});showResult(res,`<strong>✅ "${nom}" ajoutée !</strong>`,'success');showToast('Formation ajoutée');['for_id','for_nom','for_contenu'].forEach(i=>document.getElementById(i).value='');chargerListeFormations();chargerStats();}catch(e){showResult(res,`<strong>❌</strong>${e.message}`,'error');}finally{setBtnLoading('btnAjouterFormation',false,'+ Ajouter au catalogue');}}
-
-async function ajouterSession(){const id=document.getElementById('ses_id').value,date=document.getElementById('ses_date').value,prix=document.getElementById('ses_prix').value,res=document.getElementById('res_ses');if(!id||!date||!prix){showResult(res,'<strong>⚠️ Remplis tous les champs</strong>','error');return;}setBtnLoading('btnAjouterSession',true);try{await apiFetch('/sessions',{method:'POST',body:JSON.stringify({idSession:parseInt(id),date,prix:parseFloat(prix)})});showResult(res,`<strong>✅ Session ajoutée !</strong>`,'success');showToast('Session ajoutée');['ses_id','ses_date','ses_prix'].forEach(i=>document.getElementById(i).value='');chargerListeSessions();chargerStats();}catch(e){showResult(res,`<strong>❌</strong>${e.message}`,'error');}finally{setBtnLoading('btnAjouterSession',false,'+ Ajouter la session');}}
-
-async function ajouterEmploye(){const id=document.getElementById('emp_id').value,nom=document.getElementById('emp_nom').value,adr=document.getElementById('emp_adr').value,res=document.getElementById('res_emp');if(!id||!nom||!adr){showResult(res,'<strong>⚠️ Remplis les champs</strong>','error');return;}setBtnLoading('btnAjouterEmploye',true);try{await apiFetch('/employes',{method:'POST',body:JSON.stringify({numeroEmploye:parseInt(id),nom,adresse:adr})});showResult(res,`<strong>✅ "${nom}" ajouté !</strong>`,'success');showToast(`${nom} ajouté`);['emp_id','emp_nom','emp_adr'].forEach(i=>document.getElementById(i).value='');chargerListeEmployes();chargerStats();}catch(e){showResult(res,`<strong>❌</strong>${e.message}`,'error');}finally{setBtnLoading('btnAjouterEmploye',false,"+ Ajouter l'employé");}}
-
-async function ajouterResponsable(){const id=document.getElementById('resp_id').value,nom=document.getElementById('resp_nom').value,adr=document.getElementById('resp_adr').value,date=document.getElementById('resp_date').value,res=document.getElementById('res_emp');if(!id||!nom||!adr||!date){showResult(res,'<strong>⚠️ Remplis les champs</strong>','error');return;}setBtnLoading('btnAjouterResponsable',true);try{await apiFetch('/responsables',{method:'POST',body:JSON.stringify({numeroEmploye:parseInt(id),nom,adresse:adr,dateNomination:date})});showResult(res,`<strong>✅ "${nom}" ajouté !</strong>`,'success');showToast('Responsable ajouté');}catch(e){showResult(res,`<strong>❌</strong>${e.message}`,'error');}finally{setBtnLoading('btnAjouterResponsable',false,'+ Ajouter le responsable');}}
-
-/* ── FILE INPUT ── */
-function onFileChange(inputId,fakeId,hiddenId){const file=document.getElementById(inputId).files[0];const fake=document.getElementById(fakeId);const hidden=document.getElementById(hiddenId);if(file){fake.classList.add('has-file');fake.innerHTML=`<span class="fi-icon">✅</span><span class="fi-text">${file.name}</span>`;hidden.value=file.name;}else{fake.classList.remove('has-file');fake.innerHTML=`<span class="fi-icon">📎</span><span class="fi-text">Cliquer pour joindre un PDF…</span>`;hidden.value='';}}
-
-/* ── UTILS ── */
-function showResult(el,html,type){el.innerHTML=html;el.className='resp-result '+type;}
-function setBtnLoading(id,loading,label){const btn=document.getElementById(id);if(!btn)return;btn.disabled=loading;btn.innerHTML=loading?'<span class="spin-btn"></span>':label;}
-function showToast(msg){const el=document.createElement('div');el.className='toast-msg';el.textContent=msg;document.getElementById('toastContainer').appendChild(el);setTimeout(()=>el.remove(),3200);}
-
-/* ── INIT ── */
-chargerStats();
-</script>
 </body>
 </html>
